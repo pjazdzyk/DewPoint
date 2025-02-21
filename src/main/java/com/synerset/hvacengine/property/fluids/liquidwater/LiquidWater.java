@@ -19,6 +19,8 @@ public class LiquidWater implements Fluid {
     private final Density density;
     private final SpecificHeat specificHeat;
     private final SpecificEnthalpy specificEnthalpy;
+    private final DynamicViscosity dynamicViscosity;
+    private final KinematicViscosity kinematicViscosity;
 
     /**
      * Constructs a LiquidWater object with the specified pressure and temperature.
@@ -38,26 +40,43 @@ public class LiquidWater implements Fluid {
         this.density = LiquidWaterEquations.density(temperature);
         this.specificHeat = LiquidWaterEquations.specificHeat(temperature);
         this.specificEnthalpy = LiquidWaterEquations.specificEnthalpy(temperature);
+        this.dynamicViscosity = LiquidWaterEquations.dynamicViscosity(temperature, density);
+        this.kinematicViscosity = LiquidWaterEquations.kinematicViscosity(dynamicViscosity, density);
     }
 
+    @Override
     public Temperature getTemperature() {
         return temperature;
     }
 
+    @Override
     public Pressure getPressure() {
         return pressure;
     }
 
+    @Override
     public Density getDensity() {
         return density;
     }
 
+    @Override
     public SpecificHeat getSpecificHeat() {
         return specificHeat;
     }
 
+    @Override
     public SpecificEnthalpy getSpecificEnthalpy() {
         return specificEnthalpy;
+    }
+
+    @Override
+    public DynamicViscosity getDynamicViscosity() {
+        return dynamicViscosity;
+    }
+
+    @Override
+    public KinematicViscosity getKinematicViscosity() {
+        return kinematicViscosity;
     }
 
     /**
@@ -75,7 +94,9 @@ public class LiquidWater implements Fluid {
                 temperature.toEngineeringFormat("t_w", digits) + end +
                 specificEnthalpy.toEngineeringFormat("i_w", digits) + separator +
                 density.toEngineeringFormat("ρ_w", digits) + separator +
-                specificHeat.toEngineeringFormat("cp_w", digits) + end;
+                specificHeat.toEngineeringFormat("cp_w", digits) + end +
+                dynamicViscosity.toEngineeringFormat("μ_w", digits) + separator +
+                kinematicViscosity.toEngineeringFormat("ν_w", digits) + end;
     }
 
     @Override
@@ -92,7 +113,7 @@ public class LiquidWater implements Fluid {
 
     @Override
     public int hashCode() {
-        return Objects.hash(temperature, pressure, density, specificHeat, specificEnthalpy);
+        return Objects.hash(temperature, pressure, density);
     }
 
     @Override
@@ -103,6 +124,8 @@ public class LiquidWater implements Fluid {
                 ", density=" + density +
                 ", specificHeat=" + specificHeat +
                 ", specificEnthalpy=" + specificEnthalpy +
+                ", dynamicViscosity=" + dynamicViscosity +
+                ", kinematicViscosity=" + kinematicViscosity +
                 '}';
     }
 

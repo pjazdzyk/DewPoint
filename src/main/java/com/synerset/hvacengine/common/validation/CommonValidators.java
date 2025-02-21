@@ -31,6 +31,18 @@ public final class CommonValidators {
         }
     }
 
+    public static <K extends Unit> void requireNonZero(PhysicalQuantity<K> quantityToCheck) {
+        if (quantityToCheck.isEqualZero()) {
+            throw new HvacEngineMissingArgumentException(quantityToCheck.getClass().getSimpleName() + " cannot hold ZERO value.");
+        }
+    }
+
+    public static void requireNonZero(double valueToCheck, String variableName){
+        if(valueToCheck == 0){
+            throw new HvacEngineArgumentException("Value of " + variableName + " cannot be ZERO.");
+        }
+    }
+
     public static <K extends Unit> void requireAboveLowerBound(PhysicalQuantity<K> quantityToCheck, PhysicalQuantity<K> lowerBoundLimit) {
         if (quantityToCheck.isEqualOrLowerThan(lowerBoundLimit)) {
             throw new HvacEngineArgumentException(String.format("Lower bound limit exceeded. Actual: %s, limit: %s", quantityToCheck, lowerBoundLimit));

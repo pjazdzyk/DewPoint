@@ -18,6 +18,8 @@ class LiquidWaterTest {
         double expectedDensity = LiquidWaterEquations.density(inputAirTemp);
         double expectedSpecHeat = LiquidWaterEquations.specificHeat(inputAirTemp);
         double expectedSpecEnthalpy = LiquidWaterEquations.specificEnthalpy(inputAirTemp);
+        double expectedDynamicViscosity = LiquidWaterEquations.dynamicViscosity(inputAirTemp, expectedDensity);
+        double expectedKinematicViscosity = LiquidWaterEquations.kinematicViscosityFromDynVis(expectedDynamicViscosity, expectedDensity);
 
         // When
         LiquidWater liquidWater = LiquidWater.of(
@@ -30,6 +32,8 @@ class LiquidWaterTest {
         double actualSpecHeat = liquidWater.getSpecificHeat().getValue();
         double actualSpecEnthalpy = liquidWater.getSpecificEnthalpy().getValue();
         double actualDensity = liquidWater.getDensity().getValue();
+        double actualDynVis = liquidWater.getDynamicViscosity().getValue();
+        double actualKinVis = liquidWater.getKinematicViscosity().getValue();
 
         // Then
         assertThat(actualPressure).isEqualTo(inputPressure);
@@ -37,6 +41,8 @@ class LiquidWaterTest {
         assertThat(actualSpecHeat).isEqualTo(expectedSpecHeat);
         assertThat(actualSpecEnthalpy).isEqualTo(expectedSpecEnthalpy);
         assertThat(expectedDensity).isEqualTo(actualDensity);
+        assertThat(expectedDynamicViscosity).isEqualTo(actualDynVis);
+        assertThat(expectedKinematicViscosity).isEqualTo(actualKinVis);
     }
 
 }

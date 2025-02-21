@@ -44,6 +44,20 @@ public interface Fluid extends ConsolePrintable {
     SpecificEnthalpy getSpecificEnthalpy();
 
     /**
+     * Get the dynamic viscosity the fluid.
+     *
+     * @return The dynamic viscosity in appropriate units.
+     */
+    DynamicViscosity getDynamicViscosity();
+
+    /**
+     * Get the kinematic viscosity of the fluid.
+     *
+     * @return The kinematic viscosity in appropriate units.
+     */
+    KinematicViscosity getKinematicViscosity();
+
+    /**
      * Compare this fluid with another fluid of the same type for equality within a specified precision.
      *
      * @param fluid   The fluid to compare with.
