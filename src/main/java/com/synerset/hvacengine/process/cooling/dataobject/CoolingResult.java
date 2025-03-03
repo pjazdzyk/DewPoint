@@ -1,6 +1,6 @@
 package com.synerset.hvacengine.process.cooling.dataobject;
 
-import com.synerset.hvacengine.process.ConsoleOutputFormatters;
+import com.synerset.hvacengine.common.ConsoleOutputFormatters;
 import com.synerset.hvacengine.process.ProcessResult;
 import com.synerset.hvacengine.process.ProcessType;
 import com.synerset.hvacengine.process.cooling.CoolingMode;
@@ -29,8 +29,13 @@ public record CoolingResult(ProcessType processType,
         return ConsoleOutputFormatters.coolingNodeConsoleOutput(this);
     }
 
-    public CoolingResult withProcessMode(CoolingMode processMode){
+    public CoolingResult withProcessMode(CoolingMode processMode) {
         return new CoolingResult(processType, processMode, inletAirFlow, outletAirFlow, heatOfProcess, condensateFlow,
+                coolantSupplyFlow, coolantReturnFlow, averageCoilWallTemperature, bypassFactor);
+    }
+
+    public CoolingResult withInletFlow(FlowOfHumidAir inletFlow) {
+        return new CoolingResult(processType, processMode, inletFlow, outletAirFlow, heatOfProcess, condensateFlow,
                 coolantSupplyFlow, coolantReturnFlow, averageCoilWallTemperature, bypassFactor);
     }
 

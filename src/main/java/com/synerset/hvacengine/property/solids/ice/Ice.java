@@ -67,12 +67,12 @@ public class Ice implements ConsolePrintable {
         String end = "\n\t";
         int digits = 3;
         return "Ice:" + end +
-                pressure.toEngineeringFormat("P_abs", digits) + separator +
-                temperature.toEngineeringFormat("t_ice", digits) + end +
+               pressure.toEngineeringFormat("P_abs", digits) + separator +
+               temperature.toEngineeringFormat("t_ice", digits) + end +
 
-                specificEnthalpy.toEngineeringFormat("i_ice",digits) + separator +
-                density.toEngineeringFormat("ρ_ice", digits) + separator +
-                specificHeat.toEngineeringFormat("cp_ice", digits);
+               specificEnthalpy.toEngineeringFormat("i_ice", digits) + separator +
+               density.toEngineeringFormat("ρ_ice", digits) + separator +
+               specificHeat.toEngineeringFormat("cp_ice", digits);
     }
 
     @Override
@@ -91,12 +91,12 @@ public class Ice implements ConsolePrintable {
     @Override
     public String toString() {
         return "Ice{" +
-                "temperature=" + temperature +
-                ", pressure=" + pressure +
-                ", density=" + density +
-                ", specificHeat=" + specificHeat +
-                ", specificEnthalpy=" + specificEnthalpy +
-                '}';
+               "temperature=" + temperature +
+               ", pressure=" + pressure +
+               ", density=" + density +
+               ", specificHeat=" + specificHeat +
+               ", specificEnthalpy=" + specificEnthalpy +
+               '}';
     }
 
     // Static factory methods

@@ -2,7 +2,6 @@ package com.synerset.hvacengine.property.fluids.watervapour;
 
 import com.synerset.hvacengine.common.validation.CommonValidators;
 import com.synerset.hvacengine.property.fluids.humidair.HumidAirEquations;
-import com.synerset.hvacengine.property.fluids.liquidwater.LiquidWaterEquations;
 import com.synerset.unitility.unitsystem.humidity.RelativeHumidity;
 import com.synerset.unitility.unitsystem.thermodynamic.*;
 
@@ -67,10 +66,10 @@ public final class WaterVapourEquations {
      */
     public static double thermalConductivity(double tw) {
         return 1.74822 * Math.pow(10, -2) + 7.69127
-                * Math.pow(10, -5) * tw - 3.23464
-                * Math.pow(10, -7) * Math.pow(tw, 2) + 2.59524
-                * Math.pow(10, -9) * Math.pow(tw, 3) - 3.1765
-                * Math.pow(10, -12) * Math.pow(tw, 4);
+                                            * Math.pow(10, -5) * tw - 3.23464
+                                                                      * Math.pow(10, -7) * Math.pow(tw, 2) + 2.59524
+                                                                                                             * Math.pow(10, -9) * Math.pow(tw, 3) - 3.1765
+                                                                                                                                                    * Math.pow(10, -12) * Math.pow(tw, 4);
     }
 
     public static ThermalConductivity thermalConductivity(Temperature temperature) {
@@ -121,10 +120,10 @@ public final class WaterVapourEquations {
         c5 = -7.0213425618115390E-016;
         c6 = 9.8631583006961855E-020;
         return c0 + c1 * tk + c2 * tk * tk
-                + c3 * tk * tk * tk
-                + c4 * tk * tk * tk * tk
-                + c5 * tk * tk * tk * tk * tk
-                + c6 * tk * tk * tk * tk * tk * tk;
+               + c3 * tk * tk * tk
+               + c4 * tk * tk * tk * tk
+               + c5 * tk * tk * tk * tk * tk
+               + c6 * tk * tk * tk * tk * tk * tk;
     }
 
     public static SpecificHeat specificHeat(Temperature temperature) {
@@ -178,7 +177,7 @@ public final class WaterVapourEquations {
         return Density.ofKilogramPerCubicMeter(densityVal);
     }
 
-    public static SpecificEnthalpy heatOfCondensation(Pressure pressure, Temperature temperature){
+    public static SpecificEnthalpy heatOfCondensation(Pressure pressure, Temperature temperature) {
         double r = heatOfCondensation(pressure.getInPascals(), temperature.getInCelsius());
         return SpecificEnthalpy.ofKiloJoulePerKiloGram(r);
     }

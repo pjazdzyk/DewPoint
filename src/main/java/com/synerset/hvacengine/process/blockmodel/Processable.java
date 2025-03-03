@@ -9,7 +9,6 @@ public interface Processable<K> {
 
     /**
      * Executes the process calculations and returns the result.
-     *
      * This method should contain the logic to perform the necessary calculations or operations
      * and return the result of type {@code K}.
      *
@@ -19,7 +18,6 @@ public interface Processable<K> {
 
     /**
      * Retrieves the result of the process after the calculations are performed.
-     *
      * This method provides access to the process result after the calculation has been run.
      *
      * @return The result of type {@code K} after the process has been executed.

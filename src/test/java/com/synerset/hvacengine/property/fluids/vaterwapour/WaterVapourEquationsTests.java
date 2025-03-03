@@ -14,7 +14,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withPrecision;
 
@@ -121,7 +120,7 @@ class WaterVapourEquationsTests {
 
     @Test
     @DisplayName("should return water vapour heat of condensation when temperature and pressure is given")
-    void heatOfCondensation_shouldReturnHeatOfCondensation_whenTemperatureAndPressureIsGiven(){
+    void heatOfCondensation_shouldReturnHeatOfCondensation_whenTemperatureAndPressureIsGiven() {
         // Given
         var expectedR = LiquidWaterEquations.HEAT_OF_WATER_VAPORIZATION;
         var tx = 0;

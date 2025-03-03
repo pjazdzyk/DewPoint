@@ -20,9 +20,8 @@ import java.util.List;
  * REFERENCES LEGEND KEY: <p>
  * [reference no] [value symbology in standard, unit] (equation number) [page] <p>
  *
- * @author Piotr Jażdżyk, MScEng
+ * @author Piotr Jażdżyk, MSc Eng
  */
-
 public final class LiquidWaterEquations {
     public static final double WATER_CRITICAL_TEMPERATURE_IN_K = 647.096;   // [K]
     public static final double HEAT_OF_WATER_VAPORIZATION = 2500.8982920;   // [kJ/kg]   - Water heat of vaporization (t=0oC)
@@ -218,11 +217,11 @@ public final class LiquidWaterEquations {
     /**
      * Calculates the kinematic viscosity of water (in m²/s) given the temperature (C) and density (kg/m³)
      *
-     * @param dynamicViscosity  Dynamic viscosity in Pa * s.
-     * @param density Density in kg/m³.
+     * @param dynamicViscosity Dynamic viscosity in Pa * s.
+     * @param density          Density in kg/m³.
      * @return Kinematic viscosity in m²/s.
      */
-    public static double kinematicViscosityFromDynVis(double dynamicViscosity, double density){
+    public static double kinematicViscosityFromDynVis(double dynamicViscosity, double density) {
         return dynamicViscosity / density;
     }
 

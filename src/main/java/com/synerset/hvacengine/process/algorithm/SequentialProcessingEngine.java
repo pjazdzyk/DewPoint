@@ -2,7 +2,7 @@ package com.synerset.hvacengine.process.algorithm;
 
 import com.synerset.hvacengine.common.ConsolePrintable;
 import com.synerset.hvacengine.common.exception.HvacEngineArgumentException;
-import com.synerset.hvacengine.process.HvacProcessBlock;
+import com.synerset.hvacengine.process.AirFlowProcessBlock;
 import com.synerset.hvacengine.process.ProcessResult;
 import com.synerset.hvacengine.process.ProcessType;
 import com.synerset.hvacengine.process.source.SimpleDataSource;
@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class SequentialProcessingEngine implements ConsolePrintable {
 
-    private final List<HvacProcessBlock> processBlocksToCompute;
+    private final List<AirFlowProcessBlock> processBlocksToCompute;
     private final List<ProcessResult> processResults;
     private SimpleDataSource<FlowOfHumidAir> airFlowSource;
 
@@ -38,15 +38,15 @@ public class SequentialProcessingEngine implements ConsolePrintable {
      * If the engine already contains previous process nodes, the output of the last node will be connected
      * to the input of the new node.
      *
-     * @param processNode The {@link HvacProcessBlock} to be added to the sequence.
+     * @param processNode The {@link AirFlowProcessBlock} to be added to the sequence.
      * @return The index at which the process node was added, or -1 if the node is null.
      */
-    public int addProcessNode(HvacProcessBlock processNode) {
+    public int addProcessNode(AirFlowProcessBlock processNode) {
         if (processNode == null) {
             return -1;
         }
         if (!processBlocksToCompute.isEmpty()) {
-            HvacProcessBlock previousNode = processBlocksToCompute.get(processBlocksToCompute.size() - 1);
+            AirFlowProcessBlock previousNode = processBlocksToCompute.get(processBlocksToCompute.size() - 1);
             processNode.getInputConnector().connectAndConsumeDataFrom(previousNode.getOutputConnector());
         }
         processBlocksToCompute.add(processNode);
@@ -61,17 +61,17 @@ public class SequentialProcessingEngine implements ConsolePrintable {
      * @throws HvacEngineArgumentException if there are no process blocks or if airflow data is missing.
      */
     public ProcessResult runCalculationsForAllNodes() {
-        if(processBlocksToCompute.isEmpty()){
+        if (processBlocksToCompute.isEmpty()) {
             throw new HvacEngineArgumentException("No process found. Cannot run calculations");
         }
 
-        HvacProcessBlock firstProcessBlock = processBlocksToCompute.get(0);
+        AirFlowProcessBlock firstProcessBlock = processBlocksToCompute.get(0);
 
-        if(airFlowSource != null){
+        if (airFlowSource != null) {
             firstProcessBlock.connectAirFlowDataSource(airFlowSource);
         }
 
-        if(firstProcessBlock.getInputConnector().getConnectorData() == null){
+        if (firstProcessBlock.getInputConnector().getConnectorData() == null) {
             throw new HvacEngineArgumentException("No inlet airflow data found. Cannot run calculations");
         }
 
@@ -98,7 +98,7 @@ public class SequentialProcessingEngine implements ConsolePrintable {
      * @param processType The {@link ProcessType} to filter by.
      * @return A list of {@link ProcessResult} instances that match the specified process type.
      */
-    public List<ProcessResult> getResults(ProcessType processType){
+    public List<ProcessResult> getResults(ProcessType processType) {
         return processResults.stream().filter(result -> result.processType() == processType).toList();
     }
 
@@ -114,9 +114,9 @@ public class SequentialProcessingEngine implements ConsolePrintable {
     /**
      * Retrieves all the process blocks that have been added to the engine.
      *
-     * @return An unmodifiable list of {@link HvacProcessBlock} instances.
+     * @return An unmodifiable list of {@link AirFlowProcessBlock} instances.
      */
-    public List<HvacProcessBlock> getAllProcessBlocks() {
+    public List<AirFlowProcessBlock> getAllProcessBlocks() {
         return Collections.unmodifiableList(processBlocksToCompute);
     }
 
@@ -136,7 +136,7 @@ public class SequentialProcessingEngine implements ConsolePrintable {
      * Converts the last process block's result into a string format for console output.
      *
      * @return A string containing the output of the last process block's result, or a message indicating
-     *         that results are not available.
+     * that results are not available.
      */
     public String toConsoleOutputLastResult() {
         return getLastProcessBlock()
@@ -195,10 +195,10 @@ public class SequentialProcessingEngine implements ConsolePrintable {
     /**
      * Static factory method to create an instance of {@link SequentialProcessingEngine} with a list of process nodes.
      *
-     * @param processNodes The {@link HvacProcessBlock} nodes to be added to the processing engine.
+     * @param processNodes The {@link AirFlowProcessBlock} nodes to be added to the processing engine.
      * @return A new instance of {@link SequentialProcessingEngine} with the specified nodes.
      */
-    public static SequentialProcessingEngine of(HvacProcessBlock... processNodes) {
+    public static SequentialProcessingEngine of(AirFlowProcessBlock... processNodes) {
         SequentialProcessingEngine sequentialProcessingEngine = new SequentialProcessingEngine();
         Arrays.stream(processNodes).forEach(sequentialProcessingEngine::addProcessNode);
         return sequentialProcessingEngine;
@@ -209,10 +209,10 @@ public class SequentialProcessingEngine implements ConsolePrintable {
      * airflow data source and a list of process nodes.
      *
      * @param airFlowSource The {@link SimpleDataSource} containing airflow data.
-     * @param processNodes The {@link HvacProcessBlock} nodes to be added to the processing engine.
+     * @param processNodes  The {@link AirFlowProcessBlock} nodes to be added to the processing engine.
      * @return A new instance of {@link SequentialProcessingEngine} with the specified data source and nodes.
      */
-    public static SequentialProcessingEngine of(SimpleDataSource<FlowOfHumidAir> airFlowSource, HvacProcessBlock... processNodes) {
+    public static SequentialProcessingEngine of(SimpleDataSource<FlowOfHumidAir> airFlowSource, AirFlowProcessBlock... processNodes) {
         SequentialProcessingEngine sequentialProcessingEngine = new SequentialProcessingEngine();
         sequentialProcessingEngine.connectInletAirFlowDataSource(airFlowSource);
         Arrays.stream(processNodes).forEach(sequentialProcessingEngine::addProcessNode);

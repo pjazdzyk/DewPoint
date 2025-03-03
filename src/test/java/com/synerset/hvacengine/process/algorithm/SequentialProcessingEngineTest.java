@@ -1,5 +1,9 @@
 package com.synerset.hvacengine.process.algorithm;
 
+import com.synerset.hvacengine.hydraulic.AirFlowDuctBlock;
+import com.synerset.hvacengine.hydraulic.material.MaterialLayer;
+import com.synerset.hvacengine.hydraulic.material.Materials;
+import com.synerset.hvacengine.hydraulic.structure.CircularStructure;
 import com.synerset.hvacengine.process.ProcessResult;
 import com.synerset.hvacengine.process.ProcessType;
 import com.synerset.hvacengine.process.cooling.CoolantData;
@@ -8,6 +12,9 @@ import com.synerset.hvacengine.process.heating.HeatingFromHumidity;
 import com.synerset.hvacengine.process.mixing.Mixing;
 import com.synerset.hvacengine.process.source.SimpleDataSource;
 import com.synerset.hvacengine.property.fluids.humidair.FlowOfHumidAir;
+import com.synerset.unitility.unitsystem.common.Diameter;
+import com.synerset.unitility.unitsystem.common.Height;
+import com.synerset.unitility.unitsystem.common.Length;
 import com.synerset.unitility.unitsystem.humidity.RelativeHumidity;
 import com.synerset.unitility.unitsystem.thermodynamic.Temperature;
 import org.junit.jupiter.api.Test;
@@ -51,16 +58,25 @@ class SequentialProcessingEngineTest {
         SimpleDataSource<RelativeHumidity> humiditySourceBlock = new SimpleDataSource<>(targetRH);
         HeatingFromHumidity heatingBlock = HeatingFromHumidity.of(humiditySourceBlock);
 
+        // Duct block config
+        CircularStructure circularStructure = CircularStructure.builder()
+                .innerDiameter(Diameter.ofMillimeters(200))
+                .baseMaterial(MaterialLayer.of(Materials.INDUSTRIAL_STEEL, Height.ofMillimeters(1)))
+                .build();
+
+        AirFlowDuctBlock airFlowDuctBlock = AirFlowDuctBlock.of(circularStructure, Length.ofMeters(10));
+
         // When
         SequentialProcessingEngine processComputation = SequentialProcessingEngine.of(mixingBlock, coolingBlock);
-        int processPosition = processComputation.addProcessNode(heatingBlock);
+        int ductPosition = processComputation.addProcessNode(airFlowDuctBlock);
+        int heatingPosition = processComputation.addProcessNode(heatingBlock);
         ProcessResult lastResult = processComputation.runCalculationsForAllNodes();
         List<ProcessResult> allResults = processComputation.getProcessResults();
 
         // Then
         assertThat(lastResult).isNotNull();
-        assertThat(allResults).isNotNull().hasSize(3);
-        assertThat(processComputation.getAllProcessBlocks()).hasSize(3);
+        assertThat(allResults).isNotNull().hasSize(4);
+        assertThat(processComputation.getAllProcessBlocks()).hasSize(4);
         assertThat(processComputation.getLastResult().heatOfProcess().getValue()).isEqualTo(10000, withPrecision(100d));
         FlowOfHumidAir outletAirFlow = lastResult.outletAirFlow();
         assertThat(outletAirFlow.getDryAirMassFlow()).isEqualTo(inletFlow.getDryAirMassFlow().plus(recirculationAir.getDryAirMassFlow()));
@@ -68,8 +84,9 @@ class SequentialProcessingEngineTest {
         assertThat(outletAirFlow.getRelativeHumidity().getValue()).isEqualTo(30, withPrecision(1E-11));
         assertThat(processComputation.toConsoleOutput()).contains("MIXING", "COOLING", "HEATING");
         assertThat(processComputation.toConsoleOutputLastResult()).contains("HEATING");
-        assertThat(processPosition).isEqualTo(2);
-        assertThat(processComputation.getResults(ProcessType.HEATING).get(0)).isEqualTo(processComputation.getProcessResults().get(processPosition));
+        assertThat(ductPosition).isEqualTo(2);
+        assertThat(heatingPosition).isEqualTo(3);
+        assertThat(processComputation.getResults(ProcessType.HEATING).get(0)).isEqualTo(processComputation.getProcessResults().get(heatingPosition));
         assertThat(SequentialProcessingEngine.of()).isNotNull().isInstanceOf(SequentialProcessingEngine.class);
     }
 

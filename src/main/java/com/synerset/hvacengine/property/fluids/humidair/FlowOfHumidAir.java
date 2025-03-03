@@ -165,13 +165,13 @@ public class FlowOfHumidAir implements Flow<HumidAir> {
         String end = "\n\t";
         int digits = 3;
         return "FlowOfHumidAir:" + end +
-                massFlow.toEngineeringFormat("G", digits) + separator +
-                massFlow.toKiloGramPerHour().toEngineeringFormat("G", digits) + separator +
-                volFlow.toEngineeringFormat("V", digits) + separator +
-                volFlow.toCubicMetersPerHour().toEngineeringFormat("V", digits) + end +
-                getDryAirMassFlow().toEngineeringFormat("G_da", digits) + separator +
-                getDryAirMassFlow().toKiloGramPerHour().toEngineeringFormat("G_da", digits) + end +
-                humidAir.toConsoleOutput();
+               massFlow.toEngineeringFormat("G", digits) + separator +
+               massFlow.toKiloGramPerHour().toEngineeringFormat("G", digits) + separator +
+               volFlow.toEngineeringFormat("V", digits) + separator +
+               volFlow.toCubicMetersPerHour().toEngineeringFormat("V", digits) + end +
+               getDryAirMassFlow().toEngineeringFormat("G_da", digits) + separator +
+               getDryAirMassFlow().toKiloGramPerHour().toEngineeringFormat("G_da", digits) + end +
+               humidAir.toConsoleOutput();
     }
 
     @Override
@@ -190,11 +190,11 @@ public class FlowOfHumidAir implements Flow<HumidAir> {
     @Override
     public String toString() {
         return "FlowOfHumidAir{" +
-                "humidAir=" + humidAir +
-                ", massFlow=" + massFlow +
-                ", volFlow=" + volFlow +
-                ", flowOfDryAir=" + flowOfDryAir +
-                '}';
+               "humidAir=" + humidAir +
+               ", massFlow=" + massFlow +
+               ", volFlow=" + volFlow +
+               ", flowOfDryAir=" + flowOfDryAir +
+               '}';
     }
 
     // Static factory methods

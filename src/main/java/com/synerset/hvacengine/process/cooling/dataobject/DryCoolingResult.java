@@ -1,6 +1,6 @@
 package com.synerset.hvacengine.process.cooling.dataobject;
 
-import com.synerset.hvacengine.process.ConsoleOutputFormatters;
+import com.synerset.hvacengine.common.ConsoleOutputFormatters;
 import com.synerset.hvacengine.process.ProcessResult;
 import com.synerset.hvacengine.process.ProcessType;
 import com.synerset.hvacengine.process.cooling.CoolingMode;

@@ -71,6 +71,6 @@ public interface Fluid extends ConsolePrintable {
         if (this.getClass() != fluid.getClass()) return false;
 
         return getPressure().isEqualWithPrecision(fluid.getPressure(), epsilon)
-                && getTemperature().isEqualWithPrecision(fluid.getTemperature(), epsilon);
+               && getTemperature().isEqualWithPrecision(fluid.getTemperature(), epsilon);
     }
 }

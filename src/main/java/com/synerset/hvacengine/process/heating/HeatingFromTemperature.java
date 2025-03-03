@@ -1,18 +1,21 @@
 package com.synerset.hvacengine.process.heating;
 
 import com.synerset.hvacengine.common.validation.CommonValidators;
-import com.synerset.hvacengine.process.ConsoleOutputFormatters;
-import com.synerset.hvacengine.process.HvacProcessBlock;
+import com.synerset.hvacengine.hydraulic.dataobject.HydraulicLossResult;
+import com.synerset.hvacengine.process.AirFlowProcessBlock;
 import com.synerset.hvacengine.process.ProcessType;
 import com.synerset.hvacengine.process.blockmodel.ConnectorInput;
 import com.synerset.hvacengine.process.blockmodel.ConnectorOutput;
 import com.synerset.hvacengine.process.blockmodel.OutputConnection;
 import com.synerset.hvacengine.process.heating.dataobject.HeatingResult;
+import com.synerset.hvacengine.process.pressurechange.PressureChangeEquations;
+import com.synerset.hvacengine.process.pressurechange.dataobject.PressureChangeResult;
 import com.synerset.hvacengine.property.fluids.humidair.FlowOfHumidAir;
 import com.synerset.unitility.unitsystem.thermodynamic.Power;
+import com.synerset.unitility.unitsystem.thermodynamic.Pressure;
 import com.synerset.unitility.unitsystem.thermodynamic.Temperature;
 
-public class HeatingFromTemperature implements HvacProcessBlock {
+public class HeatingFromTemperature implements AirFlowProcessBlock {
 
     private static final ProcessType PROCESS_TYPE = ProcessType.HEATING;
     private static final HeatingMode HEATING_MODE = HeatingMode.FROM_TEMPERATURE;
@@ -21,16 +24,19 @@ public class HeatingFromTemperature implements HvacProcessBlock {
     private final ConnectorOutput<FlowOfHumidAir> outputAirFlowConnector;
     private final ConnectorOutput<Power> outputHeatConnector;
     private HeatingResult processResult;
+    private HydraulicLossResult hydraulicResults;
 
     public HeatingFromTemperature() {
         this.inputAirFlowConnector = ConnectorInput.of(FlowOfHumidAir.class);
         this.targetTemperatureConnector = ConnectorInput.of(Temperature.class);
         this.outputHeatConnector = ConnectorOutput.of(Power.class);
         this.outputAirFlowConnector = ConnectorOutput.of(FlowOfHumidAir.class);
+        this.hydraulicResults = HydraulicLossResult.createEmpty();
     }
 
     public HeatingFromTemperature(OutputConnection<FlowOfHumidAir> blockWithAirFlowOutput,
-                                  OutputConnection<Temperature> blockWithTemperatureOutput) {
+                                  OutputConnection<Temperature> blockWithTemperatureOutput,
+                                  Pressure coilPressureLoss) {
 
         this();
         CommonValidators.requireNotNull(blockWithAirFlowOutput);
@@ -39,6 +45,7 @@ public class HeatingFromTemperature implements HvacProcessBlock {
         this.targetTemperatureConnector.connectAndConsumeDataFrom(blockWithTemperatureOutput.getOutputConnector());
         this.outputHeatConnector.setConnectorData(Power.ofWatts(0));
         this.outputAirFlowConnector.setConnectorData(inputAirFlowConnector.getConnectorData());
+        this.hydraulicResults = HydraulicLossResult.builder().withLocalPressureLoss(coilPressureLoss).build();
     }
 
     @Override
@@ -46,11 +53,19 @@ public class HeatingFromTemperature implements HvacProcessBlock {
         inputAirFlowConnector.updateConnectorData();
         targetTemperatureConnector.updateConnectorData();
         Temperature targetTemperature = targetTemperatureConnector.getConnectorData();
+
         FlowOfHumidAir inletAirFlow = inputAirFlowConnector.getConnectorData();
-        HeatingResult heatingProcessResults = HeatingEquations.heatingFromTargetTemperature(inletAirFlow, targetTemperature);
+        Pressure pressureLoss = hydraulicResults.totalPressureLoss();
+        PressureChangeResult pressureChangeResult = PressureChangeEquations.pressureDropDueFriction(inletAirFlow, pressureLoss);
+
+        // Inlet flow is assigned again, because at the final result we need show inlet air entering block, not intermediate inlet air from pressure change process
+        HeatingResult heatingProcessResults = HeatingEquations.heatingFromTargetTemperature(pressureChangeResult.outletAirFlow(), targetTemperature)
+                .withInletFlow(inletAirFlow);
+
         outputAirFlowConnector.setConnectorData(heatingProcessResults.outletAirFlow());
         outputHeatConnector.setConnectorData(heatingProcessResults.heatOfProcess());
         this.processResult = heatingProcessResults;
+
         return heatingProcessResults;
     }
 
@@ -78,14 +93,6 @@ public class HeatingFromTemperature implements HvacProcessBlock {
         return outputAirFlowConnector;
     }
 
-    @Override
-    public String toConsoleOutput() {
-        if (inputAirFlowConnector.getConnectorData() == null || processResult == null) {
-            return "Results not available. Run process first.";
-        }
-        return ConsoleOutputFormatters.heatingConsoleOutput(processResult);
-    }
-
     // Methods specific for this process
     public Temperature getUnwrappedTargetTemperature() {
         return targetTemperatureConnector.getConnectorData();
@@ -95,13 +102,13 @@ public class HeatingFromTemperature implements HvacProcessBlock {
         return targetTemperatureConnector;
     }
 
-    public void connectTemperatureSource(OutputConnection<Temperature> sourceWithTemperatureOutput){
+    public void connectTemperatureSource(OutputConnection<Temperature> sourceWithTemperatureOutput) {
         CommonValidators.requireNotNull(sourceWithTemperatureOutput);
         this.targetTemperatureConnector.connectAndConsumeDataFrom(sourceWithTemperatureOutput.getOutputConnector());
     }
 
     // Static factor methods
-    public static HeatingFromTemperature of(){
+    public static HeatingFromTemperature of() {
         return new HeatingFromTemperature();
     }
 
@@ -113,9 +120,21 @@ public class HeatingFromTemperature implements HvacProcessBlock {
     }
 
     public static HeatingFromTemperature of(OutputConnection<FlowOfHumidAir> blockWithAirFlowOutput,
-                                            OutputConnection<Temperature> blockWithTemperatureOutput){
+                                            OutputConnection<Temperature> blockWithTemperatureOutput) {
 
-        return new HeatingFromTemperature(blockWithAirFlowOutput, blockWithTemperatureOutput);
+        return new HeatingFromTemperature(blockWithAirFlowOutput, blockWithTemperatureOutput, Pressure.ofPascal(0));
+    }
+
+    public static HeatingFromTemperature of(OutputConnection<FlowOfHumidAir> blockWithAirFlowOutput,
+                                            OutputConnection<Temperature> blockWithTemperatureOutput,
+                                            Pressure coilPressureLoss) {
+
+        return new HeatingFromTemperature(blockWithAirFlowOutput, blockWithTemperatureOutput, coilPressureLoss);
+    }
+
+    @Override
+    public HydraulicLossResult getHydraulicLossResult() {
+        return hydraulicResults;
     }
 
 }

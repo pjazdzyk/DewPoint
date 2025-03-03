@@ -8,11 +8,11 @@ import com.synerset.unitility.unitsystem.thermodynamic.*;
  * <p>
  * REFERENCE SOURCE:
  * [1] https://www.engineeringtoolbox.com/ice-thermal-properties-d_576.html
- *
+ * <p>
  * REFERENCES DESCRIPTION KEY:
  * [reference no] [value symbology in standard, unit] (equation number) [page]
  *
- * @author Piotr Jażdżyk, MScEng
+ * @author Piotr Jażdżyk, MSc Eng
  */
 public final class IceEquations {
 
@@ -49,8 +49,8 @@ public final class IceEquations {
      */
     public static double specificHeat(double tx) {
         return 2.0509727263 + 0.0048764802 * tx
-                - 0.0000277225 * Math.pow(tx, 2)
-                - 0.0000001031 * Math.pow(tx, 3);
+               - 0.0000277225 * Math.pow(tx, 2)
+               - 0.0000001031 * Math.pow(tx, 3);
     }
 
     public static SpecificHeat specificHeat(Temperature temperature) {
@@ -68,8 +68,8 @@ public final class IceEquations {
      */
     public static double thermalConductivity(double tx) {
         return 2.2173524402158 - 0.0069168602852 * tx
-                + 0.0001016721167 * Math.pow(tx, 2)
-                + 0.0000004456743 * Math.pow(tx, 3);
+               + 0.0001016721167 * Math.pow(tx, 2)
+               + 0.0000004456743 * Math.pow(tx, 3);
     }
 
     public static ThermalConductivity thermalConductivity(Temperature temperature) {
@@ -87,12 +87,12 @@ public final class IceEquations {
      */
     public static double density(double tx) {
         return 916.1204382651714 - 0.42803436487679 * tx
-                - 0.02237994685111 * Math.pow(tx, 2)
-                - 0.00061508830263 * Math.pow(tx, 3)
-                - 0.00000784399543 * Math.pow(tx, 4)
-                - 0.00000003790984 * Math.pow(tx, 5)
-                + 0.00000000005916 * Math.pow(tx, 6)
-                + 0.00000000000078 * Math.pow(tx, 7);
+               - 0.02237994685111 * Math.pow(tx, 2)
+               - 0.00061508830263 * Math.pow(tx, 3)
+               - 0.00000784399543 * Math.pow(tx, 4)
+               - 0.00000003790984 * Math.pow(tx, 5)
+               + 0.00000000005916 * Math.pow(tx, 6)
+               + 0.00000000000078 * Math.pow(tx, 7);
     }
 
     public static Density density(Temperature temperature) {

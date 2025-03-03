@@ -90,13 +90,13 @@ public class LiquidWater implements Fluid {
         String end = "\n\t";
         int digits = 3;
         return "LiquidWater:" + end +
-                pressure.toEngineeringFormat("P_abs", digits) + separator +
-                temperature.toEngineeringFormat("t_w", digits) + end +
-                specificEnthalpy.toEngineeringFormat("i_w", digits) + separator +
-                density.toEngineeringFormat("ρ_w", digits) + separator +
-                specificHeat.toEngineeringFormat("cp_w", digits) + end +
-                dynamicViscosity.toEngineeringFormat("μ_w", digits) + separator +
-                kinematicViscosity.toEngineeringFormat("ν_w", digits) + end;
+               pressure.toEngineeringFormat("P_abs", digits) + separator +
+               temperature.toEngineeringFormat("t_w", digits) + end +
+               specificEnthalpy.toEngineeringFormat("i_w", digits) + separator +
+               density.toEngineeringFormat("ρ_w", digits) + separator +
+               specificHeat.toEngineeringFormat("cp_w", digits) + end +
+               dynamicViscosity.toEngineeringFormat("μ_w", digits) + separator +
+               kinematicViscosity.toEngineeringFormat("ν_w", digits) + end;
     }
 
     @Override
@@ -105,10 +105,10 @@ public class LiquidWater implements Fluid {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (LiquidWater) obj;
         return Objects.equals(this.temperature, that.temperature) &&
-                Objects.equals(this.pressure, that.pressure) &&
-                Objects.equals(this.density, that.density) &&
-                Objects.equals(this.specificHeat, that.specificHeat) &&
-                Objects.equals(this.specificEnthalpy, that.specificEnthalpy);
+               Objects.equals(this.pressure, that.pressure) &&
+               Objects.equals(this.density, that.density) &&
+               Objects.equals(this.specificHeat, that.specificHeat) &&
+               Objects.equals(this.specificEnthalpy, that.specificEnthalpy);
     }
 
     @Override
@@ -119,14 +119,14 @@ public class LiquidWater implements Fluid {
     @Override
     public String toString() {
         return "LiquidWater{" +
-                "temperature=" + temperature +
-                ", pressure=" + pressure +
-                ", density=" + density +
-                ", specificHeat=" + specificHeat +
-                ", specificEnthalpy=" + specificEnthalpy +
-                ", dynamicViscosity=" + dynamicViscosity +
-                ", kinematicViscosity=" + kinematicViscosity +
-                '}';
+               "temperature=" + temperature +
+               ", pressure=" + pressure +
+               ", density=" + density +
+               ", specificHeat=" + specificHeat +
+               ", specificEnthalpy=" + specificEnthalpy +
+               ", dynamicViscosity=" + dynamicViscosity +
+               ", kinematicViscosity=" + kinematicViscosity +
+               '}';
     }
 
     // Static factory methods

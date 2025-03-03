@@ -1,10 +1,13 @@
-package com.synerset.hvacengine.process;
+package com.synerset.hvacengine.common;
 
+import com.synerset.hvacengine.hydraulic.dataobject.HydraulicLossResult;
+import com.synerset.hvacengine.hydraulic.dataobject.HydraulicProcessResult;
 import com.synerset.hvacengine.process.cooling.CoolantData;
 import com.synerset.hvacengine.process.cooling.dataobject.CoolingResult;
 import com.synerset.hvacengine.process.cooling.dataobject.DryCoolingResult;
 import com.synerset.hvacengine.process.heating.dataobject.HeatingResult;
 import com.synerset.hvacengine.process.mixing.dataobject.MixingResult;
+import com.synerset.hvacengine.process.pressurechange.dataobject.PressureChangeResult;
 import com.synerset.hvacengine.property.fluids.humidair.FlowOfHumidAir;
 import com.synerset.hvacengine.property.fluids.liquidwater.FlowOfLiquidWater;
 import com.synerset.unitility.unitsystem.flow.MassFlow;
@@ -26,6 +29,34 @@ public class ConsoleOutputFormatters {
     }
 
     // Formatters
+
+    /**
+     * Returns a formatted string representation of the pressure change for console output, including input and output
+     * properties.
+     *
+     * @return A formatted string representation of the pressure change process
+     */
+    public static String pressureChangeOutput(PressureChangeResult pressureChangeResult) {
+        return pressureChangeResult.processMode() + ":" + NEW_LINE +
+               inputFlowConsoleOutput(pressureChangeResult.inletAirFlow()) + NEW_LINE +
+               heatOfProcessConsoleOutput(pressureChangeResult.heatOfProcess()) + SEPARATOR +
+               pressureChangeResult.pressureChange().toEngineeringFormat("ΔP", REL_DIGITS) + NEW_LINE +
+               outputFlowConsoleOutput(pressureChangeResult.outletAirFlow()) + NEW_LINE;
+    }
+
+    /**
+     * Returns a formatted string representation of the hydraulic process for console output, including input and output
+     * properties.
+     *
+     * @return A formatted string representation of the hydraulic process.
+     */
+    public static String hydraulicResultsOutput(HydraulicProcessResult hydraulicProcessResult) {
+        return "HYDRAULIC CONDUIT:" + NEW_LINE +
+               inputFlowConsoleOutput(hydraulicProcessResult.inletAirFlow()) + NEW_LINE +
+               heatOfProcessConsoleOutput(hydraulicProcessResult.heatOfProcess()) + NEW_LINE +
+               outputFlowConsoleOutput(hydraulicProcessResult.outletAirFlow()) + NEW_LINE;
+    }
+
     /**
      * Returns a formatted string representation of the heating process for console output, including input and output
      * properties.
@@ -101,6 +132,23 @@ public class ConsoleOutputFormatters {
                mixingConsoleOutput(mixingResult.outletAirFlow(), "OUTLET FLOW:", "out") + NEW_LINE;
     }
 
+    /**
+     * Generates a formatted string representation of the hydraulic results for console output, including information
+     * about the linear, local, and total pressure losses.
+     *
+     * @param hydraulicResults The hydraulic results, containing information on the various pressure losses.
+     * @return A formatted string representing the hydraulic details.
+     */
+    public static String hydraulicConsoleOutput(HydraulicLossResult hydraulicResults) {
+        Pressure linearHeadLoss = hydraulicResults.linearPressureLoss();
+        Pressure localHeadLoss = hydraulicResults.localPressureLoss();
+        Pressure totalHeadLoss = hydraulicResults.totalPressureLoss();
+        return "HYDRAULICS:" + NEW_LINE +
+               linearHeadLoss.toEngineeringFormat("ΔPl", REL_DIGITS) + SEPARATOR +
+               localHeadLoss.toEngineeringFormat("ΔPm", REL_DIGITS) + SEPARATOR +
+               totalHeadLoss.toEngineeringFormat("ΔP_total", REL_DIGITS);
+    }
+
     // Helpers
     private static String outputFlowConsoleOutput(FlowOfHumidAir outletAirFlow) {
         return "OUTLET FLOW:" + NEW_LINE +
@@ -122,6 +170,12 @@ public class ConsoleOutputFormatters {
                inletAirFlow.getRelativeHumidity().toEngineeringFormat("RH_in", REL_DIGITS) + SEPARATOR +
                inletAirFlow.getHumidityRatio().toEngineeringFormat("x_in", REL_DIGITS) + SEPARATOR +
                inletAirFlow.getSpecificEnthalpy().toEngineeringFormat("i_in", REL_DIGITS);
+    }
+
+    private static String heatOfProcessConsoleOutput(Power power) {
+        return "HEAT OF PROCESS:" + NEW_LINE +
+               power.toWatts().toEngineeringFormat("Q", REL_DIGITS) + SEPARATOR +
+               power.toKiloWatts().toEngineeringFormat("Q", REL_DIGITS);
     }
 
     private static String coolingPowerConsoleOutput(Power power) {
@@ -152,12 +206,6 @@ public class ConsoleOutputFormatters {
                flowOfAir.getRelativeHumidity().toEngineeringFormat("RH_" + suffix, REL_DIGITS) + SEPARATOR +
                flowOfAir.getHumidityRatio().toEngineeringFormat("x_" + suffix, REL_DIGITS) + SEPARATOR +
                flowOfAir.getSpecificEnthalpy().toEngineeringFormat("i_" + suffix, REL_DIGITS);
-    }
-
-    private static String pressureConsoleOutput(Pressure pressure) {
-        return "PRESSURE JUMP:" + NEW_LINE +
-               pressure.toPascal().toEngineeringFormat("dP", REL_DIGITS) + SEPARATOR +
-               pressure.toHectoPascal().toEngineeringFormat("dP", REL_DIGITS);
     }
 
 }

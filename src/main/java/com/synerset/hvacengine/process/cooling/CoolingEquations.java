@@ -24,7 +24,10 @@ import static com.synerset.hvacengine.common.SharedSettings.SHOW_SOLVER_SUMMARY_
 import static com.synerset.hvacengine.common.validation.CommonValidators.requireAboveLowerBound;
 import static com.synerset.hvacengine.common.validation.CommonValidators.requireBetweenBoundsInclusive;
 import static com.synerset.hvacengine.common.validation.CommonValidators.requireNotNull;
-import static com.synerset.hvacengine.process.cooling.CoolingValidators.*;
+import static com.synerset.hvacengine.process.cooling.CoolingValidators.requirePhysicalInputPowerForCooling;
+import static com.synerset.hvacengine.process.cooling.CoolingValidators.requireValidTargetRelativeHumidityForCooling;
+import static com.synerset.hvacengine.process.cooling.CoolingValidators.requireValidTargetTemperatureForCooling;
+import static com.synerset.hvacengine.process.cooling.CoolingValidators.requireValidTargetTemperatureForDryCooling;
 
 public class CoolingEquations {
 

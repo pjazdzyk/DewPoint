@@ -82,7 +82,7 @@ public interface Flow<F extends Fluid> extends ConsolePrintable {
         if (this.getClass() != flowOfFluid.getClass()) return false;
 
         return getFluid().isEqualsWithPrecision(flowOfFluid.getFluid(), epsilon)
-                && getMassFlow().isEqualWithPrecision(flowOfFluid.getMassFlow(), epsilon);
+               && getMassFlow().isEqualWithPrecision(flowOfFluid.getMassFlow(), epsilon);
     }
 
 }

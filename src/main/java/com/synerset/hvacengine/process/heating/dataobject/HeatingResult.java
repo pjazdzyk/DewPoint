@@ -1,6 +1,6 @@
 package com.synerset.hvacengine.process.heating.dataobject;
 
-import com.synerset.hvacengine.process.ConsoleOutputFormatters;
+import com.synerset.hvacengine.common.ConsoleOutputFormatters;
 import com.synerset.hvacengine.process.ProcessResult;
 import com.synerset.hvacengine.process.ProcessType;
 import com.synerset.hvacengine.process.heating.HeatingMode;
@@ -20,6 +20,10 @@ public record HeatingResult(ProcessType processType,
         return ConsoleOutputFormatters.heatingConsoleOutput(this);
     }
 
+    public HeatingResult withInletFlow(FlowOfHumidAir inletFlow){
+        return new HeatingResult(processType, processMode, inletFlow, outletAirFlow, heatOfProcess);
+    }
+
     public static class Builder {
         private static final ProcessType processType = ProcessType.HEATING;
         private HeatingMode processMode;
@@ -27,7 +31,7 @@ public record HeatingResult(ProcessType processType,
         private FlowOfHumidAir outletAirFlow;
         private Power heatOfProcess;
 
-        public Builder processMode(HeatingMode processMode){
+        public Builder processMode(HeatingMode processMode) {
             this.processMode = processMode;
             return this;
         }
@@ -52,7 +56,7 @@ public record HeatingResult(ProcessType processType,
         }
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 

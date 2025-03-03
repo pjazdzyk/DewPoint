@@ -1,19 +1,22 @@
 package com.synerset.hvacengine.process.cooling;
 
 import com.synerset.hvacengine.common.validation.CommonValidators;
-import com.synerset.hvacengine.process.ConsoleOutputFormatters;
-import com.synerset.hvacengine.process.HvacProcessBlock;
+import com.synerset.hvacengine.hydraulic.dataobject.HydraulicLossResult;
+import com.synerset.hvacengine.process.AirFlowProcessBlock;
 import com.synerset.hvacengine.process.ProcessType;
 import com.synerset.hvacengine.process.blockmodel.ConnectorInput;
 import com.synerset.hvacengine.process.blockmodel.ConnectorOutput;
 import com.synerset.hvacengine.process.blockmodel.OutputConnection;
 import com.synerset.hvacengine.process.cooling.dataobject.CoolingResult;
+import com.synerset.hvacengine.process.pressurechange.PressureChangeEquations;
+import com.synerset.hvacengine.process.pressurechange.dataobject.PressureChangeResult;
 import com.synerset.hvacengine.property.fluids.humidair.FlowOfHumidAir;
 import com.synerset.hvacengine.property.fluids.liquidwater.FlowOfLiquidWater;
 import com.synerset.unitility.unitsystem.humidity.RelativeHumidity;
 import com.synerset.unitility.unitsystem.thermodynamic.Power;
+import com.synerset.unitility.unitsystem.thermodynamic.Pressure;
 
-public class CoolingFromHumidity implements HvacProcessBlock {
+public class CoolingFromHumidity implements AirFlowProcessBlock {
 
     private static final ProcessType PROCESS_TYPE = ProcessType.COOLING;
     private static final CoolingMode COOLING_MODE = CoolingMode.FROM_HUMIDITY;
@@ -24,6 +27,7 @@ public class CoolingFromHumidity implements HvacProcessBlock {
     private final ConnectorOutput<Power> heatConnector;
     private final ConnectorInput<RelativeHumidity> targetRelativeHumidityConnector;
     private CoolingResult processResult;
+    private HydraulicLossResult hydraulicResults;
 
     public CoolingFromHumidity() {
         this.inputAirFlowConnector = ConnectorInput.of(FlowOfHumidAir.class);
@@ -32,11 +36,13 @@ public class CoolingFromHumidity implements HvacProcessBlock {
         this.outputCondensateConnector = ConnectorOutput.of(FlowOfLiquidWater.class);
         this.heatConnector = ConnectorOutput.of(Power.class);
         this.targetRelativeHumidityConnector = ConnectorInput.of(RelativeHumidity.class);
+        this.hydraulicResults = HydraulicLossResult.createEmpty();
     }
 
     public CoolingFromHumidity(OutputConnection<FlowOfHumidAir> blockWithAirFlowOutput,
                                OutputConnection<CoolantData> blockWithCoolantDataOutput,
-                               OutputConnection<RelativeHumidity> blockWithHumidityOutput) {
+                               OutputConnection<RelativeHumidity> blockWithHumidityOutput,
+                               Pressure coilPressureLoss) {
 
         this();
         CommonValidators.requireNotNull(blockWithAirFlowOutput);
@@ -48,6 +54,7 @@ public class CoolingFromHumidity implements HvacProcessBlock {
         this.outputCondensateConnector.setConnectorData(FlowOfLiquidWater.zeroFlow(inputAirFlowConnector.getConnectorData().getTemperature()));
         this.heatConnector.setConnectorData(Power.ofWatts(0));
         this.outputAirFlowConnector.setConnectorData(inputAirFlowConnector.getConnectorData());
+        this.hydraulicResults = HydraulicLossResult.builder().withLocalPressureLoss(coilPressureLoss).build();
     }
 
     @Override
@@ -57,9 +64,14 @@ public class CoolingFromHumidity implements HvacProcessBlock {
         targetRelativeHumidityConnector.updateConnectorData();
 
         FlowOfHumidAir inletAirFlow = inputAirFlowConnector.getConnectorData();
+        Pressure pressureLoss = hydraulicResults.totalPressureLoss();
+        PressureChangeResult pressureChangeResult = PressureChangeEquations.pressureDropDueFriction(inletAirFlow, pressureLoss);
+
+        // Inlet flow is assigned again, because at the final result we need show inlet air entering block, not intermediate inlet air from pressure change process
         RelativeHumidity targetRelativeHum = this.targetRelativeHumidityConnector.getConnectorData();
         CoolantData coolantData = coolantDataInputConnector.getConnectorData();
-        CoolingResult results = CoolingEquations.coolingFromTargetRelativeHumidity(inletAirFlow, coolantData, targetRelativeHum);
+        CoolingResult results = CoolingEquations.coolingFromTargetRelativeHumidity(pressureChangeResult.outletAirFlow(), coolantData, targetRelativeHum)
+                .withInletFlow(inletAirFlow);
 
         outputAirFlowConnector.setConnectorData(results.outletAirFlow());
         heatConnector.setConnectorData(results.heatOfProcess());
@@ -93,14 +105,6 @@ public class CoolingFromHumidity implements HvacProcessBlock {
         return outputAirFlowConnector;
     }
 
-    @Override
-    public String toConsoleOutput() {
-        if (inputAirFlowConnector.getConnectorData() == null || processResult == null) {
-            return "Results not available. Run process first.";
-        }
-        return ConsoleOutputFormatters.coolingNodeConsoleOutput(processResult);
-    }
-
     // Method specific for this process
     public ConnectorInput<RelativeHumidity> getTargetRelativeHumidityConnector() {
         return targetRelativeHumidityConnector;
@@ -110,18 +114,18 @@ public class CoolingFromHumidity implements HvacProcessBlock {
         return targetRelativeHumidityConnector.getConnectorData();
     }
 
-    public void connectCoolantDataSource(OutputConnection<CoolantData> blockWithOutputCoolantData){
+    public void connectCoolantDataSource(OutputConnection<CoolantData> blockWithOutputCoolantData) {
         CommonValidators.requireNotNull(blockWithOutputCoolantData);
         this.coolantDataInputConnector.connectAndConsumeDataFrom(blockWithOutputCoolantData.getOutputConnector());
     }
 
-    public void connectRelativeHumidityDataSource(OutputConnection<RelativeHumidity> blockWithRelativeHumidityData){
+    public void connectRelativeHumidityDataSource(OutputConnection<RelativeHumidity> blockWithRelativeHumidityData) {
         CommonValidators.requireNotNull(blockWithRelativeHumidityData);
         this.targetRelativeHumidityConnector.connectAndConsumeDataFrom(blockWithRelativeHumidityData.getOutputConnector());
     }
 
     // Static factory methods
-    public static CoolingFromHumidity of(){
+    public static CoolingFromHumidity of() {
         return new CoolingFromHumidity();
     }
 
@@ -138,9 +142,21 @@ public class CoolingFromHumidity implements HvacProcessBlock {
 
     public static CoolingFromHumidity of(OutputConnection<FlowOfHumidAir> blockWithAirFlowOutput,
                                          OutputConnection<CoolantData> blockWithCoolantDataOutput,
-                                         OutputConnection<RelativeHumidity> blockWithHumidityOutput) {
+                                         OutputConnection<RelativeHumidity> blockWithHumidityOutput,
+                                         Pressure coilPressureLoss) {
 
-        return new CoolingFromHumidity(blockWithAirFlowOutput, blockWithCoolantDataOutput, blockWithHumidityOutput);
+        return new CoolingFromHumidity(blockWithAirFlowOutput, blockWithCoolantDataOutput, blockWithHumidityOutput, coilPressureLoss);
     }
 
+    public static CoolingFromHumidity of(OutputConnection<FlowOfHumidAir> blockWithAirFlowOutput,
+                                         OutputConnection<CoolantData> blockWithCoolantDataOutput,
+                                         OutputConnection<RelativeHumidity> blockWithHumidityOutput) {
+
+        return new CoolingFromHumidity(blockWithAirFlowOutput, blockWithCoolantDataOutput, blockWithHumidityOutput, Pressure.ofPascal(0));
+    }
+
+    @Override
+    public HydraulicLossResult getHydraulicLossResult() {
+        return hydraulicResults;
+    }
 }

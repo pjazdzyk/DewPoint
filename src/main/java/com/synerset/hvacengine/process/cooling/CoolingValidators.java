@@ -86,9 +86,9 @@ public class CoolingValidators {
     private static Power estimateMaxCoolingPower(FlowOfHumidAir inletAirFlow) {
         // Mox cooling power quick estimate to reach 0 degrees Qcool.max= G * (i_0 - i_in)
         double estimatedMaxPowerKw = inletAirFlow.getSpecificEnthalpy().toKiloJoulePerKiloGram()
-                .minusFromValue(0)
-                .multiply(inletAirFlow.getMassFlow().toKilogramsPerSecond())
-                * -1;
+                                             .minusFromValue(0)
+                                             .multiply(inletAirFlow.getMassFlow().toKilogramsPerSecond())
+                                     * -1;
         return Power.ofKiloWatts(estimatedMaxPowerKw);
     }
 

@@ -104,7 +104,7 @@ class LiquidWaterEquationsTest {
 
     @Test
     @DisplayName("should return liquid water kinematic viscosity when temperature and density is given")
-    void testKinematicViscosity(){
+    void testKinematicViscosity() {
         // Given
         double tx = 25;
         double rho = 998;

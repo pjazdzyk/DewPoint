@@ -23,9 +23,9 @@ public final class DryAirEquations {
     public static double dynamicViscosity(double ta) {
         double tk = ta + 273.15;
         return (0.40401 + 0.074582 * tk - 5.7171 * Math.pow(10, -5)
-                * Math.pow(tk, 2) + 2.9928 * Math.pow(10, -8)
-                * Math.pow(tk, 3) - 6.2524 * Math.pow(10, -12)
-                * Math.pow(tk, 4)) * Math.pow(10, -6);
+                                          * Math.pow(tk, 2) + 2.9928 * Math.pow(10, -8)
+                                                              * Math.pow(tk, 3) - 6.2524 * Math.pow(10, -12)
+                                                                                  * Math.pow(tk, 4)) * Math.pow(10, -6);
     }
 
     public static DynamicViscosity dynamicViscosity(Temperature temperature) {
@@ -63,10 +63,10 @@ public final class DryAirEquations {
      */
     public static double thermalConductivity(double ta) {
         return 2.43714 * Math.pow(10, -2)
-                + 7.83035 * Math.pow(10, -5) * ta
-                - 1.94021 * Math.pow(10, -8) * Math.pow(ta, 2)
-                + 2.85943 * Math.pow(10, -12) * Math.pow(ta, 3)
-                - 2.61420 * Math.pow(10, -14) * Math.pow(ta, 4);
+               + 7.83035 * Math.pow(10, -5) * ta
+               - 1.94021 * Math.pow(10, -8) * Math.pow(ta, 2)
+               + 2.85943 * Math.pow(10, -12) * Math.pow(ta, 3)
+               - 2.61420 * Math.pow(10, -14) * Math.pow(ta, 4);
     }
 
     public static ThermalConductivity thermalConductivity(Temperature dryAirTemperature) {
@@ -124,10 +124,10 @@ public final class DryAirEquations {
             e = 3.0582028042912701E-13;
         }
         return e * Math.pow(ta, 4)
-                + d * Math.pow(ta, 3)
-                + c * Math.pow(ta, 2)
-                + b * ta
-                + a;
+               + d * Math.pow(ta, 3)
+               + c * Math.pow(ta, 2)
+               + b * ta
+               + a;
     }
 
     public static SpecificHeat specificHeat(Temperature dryAirTemperature) {

@@ -19,7 +19,7 @@ public final class CommonValidators {
         }
     }
 
-    public static void requireNotNull(String variableName, Object object) {
+    public static void requireNotNull(Object object, String variableName) {
         if (Objects.isNull(object)) {
             throw new HvacEngineMissingArgumentException(variableName + " cannot be null.");
         }
@@ -37,8 +37,8 @@ public final class CommonValidators {
         }
     }
 
-    public static void requireNonZero(double valueToCheck, String variableName){
-        if(valueToCheck == 0){
+    public static void requireNonZero(double valueToCheck, String variableName) {
+        if (valueToCheck == 0) {
             throw new HvacEngineArgumentException("Value of " + variableName + " cannot be ZERO.");
         }
     }

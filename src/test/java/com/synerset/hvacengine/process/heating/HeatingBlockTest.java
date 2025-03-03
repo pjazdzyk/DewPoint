@@ -40,7 +40,7 @@ class HeatingBlockTest {
         // Given
         Power inputPower = Power.ofKiloWatts(56);
         SimpleDataSource<Power> powerSource = new SimpleDataSource<>(inputPower);
-        
+
         Temperature expectedTemperature = Temperature.ofCelsius(30);
         RelativeHumidity expectedRH = RelativeHumidity.ofPercentage(17.4);
 

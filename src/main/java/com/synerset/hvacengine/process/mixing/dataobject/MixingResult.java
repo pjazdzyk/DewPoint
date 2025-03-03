@@ -1,6 +1,6 @@
 package com.synerset.hvacengine.process.mixing.dataobject;
 
-import com.synerset.hvacengine.process.ConsoleOutputFormatters;
+import com.synerset.hvacengine.common.ConsoleOutputFormatters;
 import com.synerset.hvacengine.process.ProcessResult;
 import com.synerset.hvacengine.process.ProcessType;
 import com.synerset.hvacengine.process.mixing.MixingMode;
@@ -26,6 +26,11 @@ public record MixingResult(ProcessType processType,
     @Override
     public String toConsoleOutput() {
         return ConsoleOutputFormatters.mixingConsoleOutput(this);
+    }
+
+    public MixingResult withInletFlow(FlowOfHumidAir inletFlow) {
+        return new MixingResult(processType, processMode, inletFlow, outletAirFlow, heatOfProcess,
+                dryAirMassFreshAirRatio, humidAirVolFreshAirRatio, recirculationFlows);
     }
 
     public static class AirMixingResultBuilder {

@@ -134,7 +134,7 @@ class FluidLimitsTest {
         // Saturation pressure condition isn't met
         Temperature temperature100 = Temperature.ofCelsius(100);
         assertThatThrownBy(() -> HumidAir.of(Pressure.STANDARD_ATMOSPHERE, temperature100, RelativeHumidity.RH_MAX_LIMIT))
-                .isInstanceOf(HvacEngineArgumentException.class);;
+                .isInstanceOf(HvacEngineArgumentException.class);
     }
 
 }

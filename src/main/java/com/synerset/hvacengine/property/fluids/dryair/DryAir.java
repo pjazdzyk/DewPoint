@@ -96,16 +96,16 @@ public class DryAir implements Fluid {
         String end = "\n\t";
         int digits = 3;
         return "DryAir:" + end +
-                pressure.toEngineeringFormat("P_abs", digits) + separator +
-                temperature.toEngineeringFormat("DBT", digits) + end +
-                specificEnthalpy.toEngineeringFormat("i_da", digits) + separator +
-                density.toEngineeringFormat("ρ_da", digits) + separator +
-                specificHeat.toEngineeringFormat("cp_da", digits) + end +
-                kinematicViscosity.toEngineeringFormat("ν_da", digits) + separator +
-                dynamicViscosity.toEngineeringFormat("μ_da", digits) + separator +
-                thermalConductivity.toEngineeringFormat("k_da", digits) + separator +
-                thermalDiffusivity.toEngineeringFormat("α", digits) + separator +
-                prandtlNumber.toEngineeringFormat("Pr_da", digits) + "\n";
+               pressure.toEngineeringFormat("P_abs", digits) + separator +
+               temperature.toEngineeringFormat("DBT", digits) + end +
+               specificEnthalpy.toEngineeringFormat("i_da", digits) + separator +
+               density.toEngineeringFormat("ρ_da", digits) + separator +
+               specificHeat.toEngineeringFormat("cp_da", digits) + end +
+               kinematicViscosity.toEngineeringFormat("ν_da", digits) + separator +
+               dynamicViscosity.toEngineeringFormat("μ_da", digits) + separator +
+               thermalConductivity.toEngineeringFormat("k_da", digits) + separator +
+               thermalDiffusivity.toEngineeringFormat("α", digits) + separator +
+               prandtlNumber.toEngineeringFormat("Pr_da", digits) + "\n";
     }
 
     @Override
@@ -124,16 +124,16 @@ public class DryAir implements Fluid {
     @Override
     public String toString() {
         return "DryAir{" +
-                "temperature=" + temperature +
-                ", pressure=" + pressure +
-                ", density=" + density +
-                ", specificHeat=" + specificHeat +
-                ", specificEnthalpy=" + specificEnthalpy +
-                ", dynamicViscosity=" + dynamicViscosity +
-                ", kinematicViscosity=" + kinematicViscosity +
-                ", thermalConductivity=" + thermalConductivity +
-                ", prandtlNumber=" + prandtlNumber +
-                '}';
+               "temperature=" + temperature +
+               ", pressure=" + pressure +
+               ", density=" + density +
+               ", specificHeat=" + specificHeat +
+               ", specificEnthalpy=" + specificEnthalpy +
+               ", dynamicViscosity=" + dynamicViscosity +
+               ", kinematicViscosity=" + kinematicViscosity +
+               ", thermalConductivity=" + thermalConductivity +
+               ", prandtlNumber=" + prandtlNumber +
+               '}';
     }
 
     // Static factory methods

@@ -28,13 +28,15 @@ import static org.assertj.core.api.Assertions.withPrecision;
  */
 class CoolingBlockTest {
 
-    public static final HumidAir TEST_HUMID_AIR = HumidAir.of(
+    public static final HumidAir INLET_TEST_HUMID_AIR = HumidAir.of(
             Pressure.ofHectoPascal(987),
             Temperature.ofCelsius(34),
             RelativeHumidity.ofPercentage(40)
     );
-    public static final FlowOfHumidAir TEST_INLET_AIR_FLOW = FlowOfHumidAir.of(TEST_HUMID_AIR, MassFlow.ofKilogramsPerHour(10_000));
+    public static final FlowOfHumidAir TEST_INLET_AIR_FLOW = FlowOfHumidAir.of(INLET_TEST_HUMID_AIR, MassFlow.ofKilogramsPerHour(10_000));
     private static final SimpleDataSource<FlowOfHumidAir> TEST_INLET_FLOW_SOURCE = SimpleDataSource.of(TEST_INLET_AIR_FLOW);
+
+    public static final Pressure EXAMPLE_LOSS = Pressure.ofPascal(300);
 
     @Test
     @DisplayName("Cooling node: should cool air inlet air when target temperature is given")
@@ -64,14 +66,14 @@ class CoolingBlockTest {
         assertThat(processResults.processMode()).isEqualTo(CoolingMode.FROM_TEMPERATURE);
 
         FlowOfHumidAir outletAirFlow = processResults.outletAirFlow();
-        assertThat(outletAirFlow.getPressure()).isEqualTo(TEST_HUMID_AIR.getPressure());
+        assertThat(outletAirFlow.getPressure()).isEqualTo(INLET_TEST_HUMID_AIR.getPressure());
         assertThat(outletAirFlow.getTemperature().getInCelsius()).isEqualTo(targetTemperature.getInCelsius(), withPrecision(3.5E-2));
         assertThat(outletAirFlow.getRelativeHumidity().getInPercent()).isEqualTo(expectedRH.getInPercent(), withPrecision(1.5E-2));
 
         SpecificEnthalpy expectedEnthalpy = HumidAirEquations.specificEnthalpy(outletAirFlow.getTemperature(), outletAirFlow.getHumidityRatio(), outletAirFlow.getPressure());
         assertThat(outletAirFlow.getSpecificEnthalpy()).isEqualTo(expectedEnthalpy);
 
-        BypassFactor expectedBypassFactor = CoolingEquations.coilBypassFactor(coolantData.getAverageTemperature(), TEST_HUMID_AIR.getTemperature(), outletAirFlow.getTemperature());
+        BypassFactor expectedBypassFactor = CoolingEquations.coilBypassFactor(coolantData.getAverageTemperature(), INLET_TEST_HUMID_AIR.getTemperature(), outletAirFlow.getTemperature());
         assertThat(processResults.bypassFactor()).isEqualTo(expectedBypassFactor);
         assertThat(processResults.coolantSupplyFlow().getTemperature()).isEqualTo(coolantData.getSupplyTemperature());
         assertThat(processResults.coolantReturnFlow().getTemperature()).isEqualTo(coolantData.getReturnTemperature());
@@ -80,6 +82,8 @@ class CoolingBlockTest {
         assertThat(condensateFlow.getTemperature()).isEqualTo(coolantData.getAverageTemperature());
         assertThat(condensateFlow.getMassFlow()).isEqualTo(expectedCondensateFlow);
         assertThat(condensateFlow.getSpecificEnthalpy()).isEqualTo(LiquidWaterEquations.specificEnthalpy(coolantData.getAverageTemperature()));
+
+
     }
 
     @Test
@@ -110,13 +114,13 @@ class CoolingBlockTest {
         assertThat(processResults.processMode()).isEqualTo(CoolingMode.FROM_POWER);
 
         FlowOfHumidAir outletAirFlow = processResults.outletAirFlow();
-        assertThat(outletAirFlow.getPressure()).isEqualTo(TEST_HUMID_AIR.getPressure());
+        assertThat(outletAirFlow.getPressure()).isEqualTo(INLET_TEST_HUMID_AIR.getPressure());
         assertThat(outletAirFlow.getTemperature().getValue()).isEqualTo(expectedTemperature.getValue(), withPrecision(3.5E-2));
         assertThat(outletAirFlow.getRelativeHumidity()).isEqualTo(expectedRH);
         SpecificEnthalpy expectedEnthalpy = HumidAirEquations.specificEnthalpy(outletAirFlow.getTemperature(), outletAirFlow.getHumidityRatio(), outletAirFlow.getPressure());
         assertThat(outletAirFlow.getSpecificEnthalpy()).isEqualTo(expectedEnthalpy);
 
-        BypassFactor expectedBypassFactor = CoolingEquations.coilBypassFactor(coolantData.getAverageTemperature(), TEST_HUMID_AIR.getTemperature(), outletAirFlow.getTemperature());
+        BypassFactor expectedBypassFactor = CoolingEquations.coilBypassFactor(coolantData.getAverageTemperature(), INLET_TEST_HUMID_AIR.getTemperature(), outletAirFlow.getTemperature());
         assertThat(processResults.bypassFactor()).isEqualTo(expectedBypassFactor);
         assertThat(processResults.coolantSupplyFlow().getTemperature()).isEqualTo(coolantData.getSupplyTemperature());
         assertThat(processResults.coolantReturnFlow().getTemperature()).isEqualTo(coolantData.getReturnTemperature());
@@ -155,13 +159,13 @@ class CoolingBlockTest {
         assertThat(processResults.processMode()).isEqualTo(CoolingMode.FROM_HUMIDITY);
 
         FlowOfHumidAir outletAirFlow = processResults.outletAirFlow();
-        assertThat(outletAirFlow.getPressure()).isEqualTo(TEST_HUMID_AIR.getPressure());
+        assertThat(outletAirFlow.getPressure()).isEqualTo(INLET_TEST_HUMID_AIR.getPressure());
         assertThat(outletAirFlow.getTemperature().getInCelsius()).isEqualTo(expectedTemperature.getInCelsius(), withPrecision(3.5E-2));
         assertThat(outletAirFlow.getRelativeHumidity().getInPercent()).isEqualTo(targetRH.getInPercent(), withPrecision(1.5E-2));
         SpecificEnthalpy expectedEnthalpy = HumidAirEquations.specificEnthalpy(outletAirFlow.getTemperature(), outletAirFlow.getHumidityRatio(), outletAirFlow.getPressure());
         assertThat(outletAirFlow.getSpecificEnthalpy()).isEqualTo(expectedEnthalpy);
 
-        BypassFactor expectedBypassFactor = CoolingEquations.coilBypassFactor(coolantData.getAverageTemperature(), TEST_HUMID_AIR.getTemperature(), outletAirFlow.getTemperature());
+        BypassFactor expectedBypassFactor = CoolingEquations.coilBypassFactor(coolantData.getAverageTemperature(), INLET_TEST_HUMID_AIR.getTemperature(), outletAirFlow.getTemperature());
         assertThat(processResults.bypassFactor()).isEqualTo(expectedBypassFactor);
         assertThat(processResults.coolantSupplyFlow().getTemperature()).isEqualTo(coolantData.getSupplyTemperature());
         assertThat(processResults.coolantReturnFlow().getTemperature()).isEqualTo(coolantData.getReturnTemperature());
@@ -190,6 +194,28 @@ class CoolingBlockTest {
         // Then
         assertThat(processResults).isNotNull();
         assertThat(processResults.outletAirFlow().getTemperature().getInCelsius()).isEqualTo(12.769, withPrecision(1E-3));
+    }
+
+    @Test
+    @DisplayName("Cooling node: should include added heat from friction pressure loss")
+    void shouldCoolInletAirWhenTargetTemperatureIsGivenWithPressureLoss() {
+        // Given
+        CoolantData coolantData = CoolantData.of(Temperature.ofCelsius(9), Temperature.ofCelsius(14));
+        SimpleDataSource<CoolantData> coolantDataSource = SimpleDataSource.of(coolantData);
+
+        Temperature targetTemperature = Temperature.ofCelsius(17);
+        SimpleDataSource<Temperature> temperatureDataSource = SimpleDataSource.of(targetTemperature);
+
+        // When
+        CoolingFromTemperature coolingBlock = CoolingFromTemperature.of(TEST_INLET_FLOW_SOURCE, coolantDataSource, temperatureDataSource, EXAMPLE_LOSS);
+        CoolingResult processResults = coolingBlock.runProcessCalculations();
+
+        // Then
+        assertThat(processResults).isNotNull();
+        assertThat(processResults.outletAirFlow()).isNotNull();
+        assertThat(processResults.inletAirFlow()).isEqualTo(TEST_INLET_AIR_FLOW);
+        assertThat(processResults.heatOfProcess().getInWatts()).isEqualTo(75111.75474079505, withPrecision(1E-9));
+        assertThat(processResults.outletAirFlow().getRelativeHumidity().getInPercent()).isEqualTo(79.63081534563221, withPrecision(1E-9));
     }
 
 }

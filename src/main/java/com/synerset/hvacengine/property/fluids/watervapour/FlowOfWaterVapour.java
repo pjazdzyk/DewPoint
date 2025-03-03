@@ -72,11 +72,11 @@ public class FlowOfWaterVapour implements Flow<WaterVapour> {
         String end = "\n\t";
         int digits = 3;
         return "FlowOfWaterVapour:" + end +
-                massFlow.toEngineeringFormat("G_wv", digits) + separator +
-                massFlow.toKiloGramPerHour().toEngineeringFormat("G_wv", digits) + separator +
-                volFlow.toEngineeringFormat("V_wv", digits) +
-                volFlow.toCubicMetersPerHour().toEngineeringFormat("V_wv", digits) + end +
-                waterVapour.toConsoleOutput();
+               massFlow.toEngineeringFormat("G_wv", digits) + separator +
+               massFlow.toKiloGramPerHour().toEngineeringFormat("G_wv", digits) + separator +
+               volFlow.toEngineeringFormat("V_wv", digits) +
+               volFlow.toCubicMetersPerHour().toEngineeringFormat("V_wv", digits) + end +
+               waterVapour.toConsoleOutput();
     }
 
     @Override
@@ -95,10 +95,10 @@ public class FlowOfWaterVapour implements Flow<WaterVapour> {
     @Override
     public String toString() {
         return "FlowOfWaterVapour{" +
-                "waterVapour=" + waterVapour +
-                ", massFlow=" + massFlow +
-                ", volFlow=" + volFlow +
-                '}';
+               "waterVapour=" + waterVapour +
+               ", massFlow=" + massFlow +
+               ", volFlow=" + volFlow +
+               '}';
     }
 
     // Class factory methods

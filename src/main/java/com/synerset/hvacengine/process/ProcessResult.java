@@ -6,7 +6,10 @@ import com.synerset.unitility.unitsystem.thermodynamic.Power;
 
 public interface ProcessResult extends ConsolePrintable {
     ProcessType processType();
+
     FlowOfHumidAir inletAirFlow();
+
     FlowOfHumidAir outletAirFlow();
+
     Power heatOfProcess();
 }

@@ -20,7 +20,7 @@ public interface OutputConnection<K> {
     /**
      * Connects the output of this object to the input of another process, represented by
      * an {@link InputConnection}.
-     *
+     * <p>
      * This method will ensure that the input connection is not null using validation.
      * It then establishes a connection between the output connector of this object
      * and the input connector of the target.

@@ -1,19 +1,22 @@
 package com.synerset.hvacengine.process.mixing;
 
 import com.synerset.hvacengine.common.validation.CommonValidators;
-import com.synerset.hvacengine.process.ConsoleOutputFormatters;
-import com.synerset.hvacengine.process.HvacProcessBlock;
+import com.synerset.hvacengine.hydraulic.dataobject.HydraulicLossResult;
+import com.synerset.hvacengine.process.AirFlowProcessBlock;
 import com.synerset.hvacengine.process.ProcessType;
 import com.synerset.hvacengine.process.blockmodel.ConnectorInput;
 import com.synerset.hvacengine.process.blockmodel.ConnectorOutput;
 import com.synerset.hvacengine.process.blockmodel.OutputConnection;
 import com.synerset.hvacengine.process.mixing.dataobject.MixingResult;
+import com.synerset.hvacengine.process.pressurechange.PressureChangeEquations;
+import com.synerset.hvacengine.process.pressurechange.dataobject.PressureChangeResult;
 import com.synerset.hvacengine.property.fluids.humidair.FlowOfHumidAir;
+import com.synerset.unitility.unitsystem.thermodynamic.Pressure;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mixing implements HvacProcessBlock {
+public class Mixing implements AirFlowProcessBlock {
 
     private static final ProcessType PROCESS_TYPE = ProcessType.MIXING;
     private final ConnectorInput<FlowOfHumidAir> inputAirFlowConnector;
@@ -21,15 +24,18 @@ public class Mixing implements HvacProcessBlock {
     private final List<ConnectorInput<FlowOfHumidAir>> inputMixingFlowConnectors;
     private MixingResult processResult;
     private MixingMode mixingMode;
+    private HydraulicLossResult hydraulicResults;
 
     public Mixing() {
         this.inputAirFlowConnector = ConnectorInput.of(FlowOfHumidAir.class);
         this.inputMixingFlowConnectors = new ArrayList<>();
         this.outputAirFlowConnector = ConnectorOutput.of(FlowOfHumidAir.class);
+        this.hydraulicResults = HydraulicLossResult.createEmpty();
     }
 
     public Mixing(OutputConnection<FlowOfHumidAir> blockWithAirFlow,
-                  List<? extends OutputConnection<FlowOfHumidAir>> blocksWithInputMixingAirFlows) {
+                  List<? extends OutputConnection<FlowOfHumidAir>> blocksWithInputMixingAirFlows,
+                  Pressure coilPressureLoss) {
 
         this();
         CommonValidators.requireNotNull(blockWithAirFlow);
@@ -38,7 +44,7 @@ public class Mixing implements HvacProcessBlock {
         blocksWithInputMixingAirFlows.forEach(blockWithFlowOutput -> inputMixingFlowConnectors.add(
                 ConnectorInput.of(blockWithFlowOutput.getOutputConnector()))
         );
-
+        this.hydraulicResults = HydraulicLossResult.builder().withLocalPressureLoss(coilPressureLoss).build();
     }
 
     @Override
@@ -69,7 +75,10 @@ public class Mixing implements HvacProcessBlock {
             mixingMode = MixingMode.MULTIPLE_MIXING;
         }
 
-        outputAirFlowConnector.setConnectorData(mixingProcessResults.outletAirFlow());
+        Pressure pressureLoss = hydraulicResults.totalPressureLoss();
+        PressureChangeResult pressureChangeResult = PressureChangeEquations.pressureDropDueFriction(mixingProcessResults.outletAirFlow(), pressureLoss);
+
+        outputAirFlowConnector.setConnectorData(pressureChangeResult.outletAirFlow());
         this.processResult = mixingProcessResults;
 
         return mixingProcessResults;
@@ -97,14 +106,6 @@ public class Mixing implements HvacProcessBlock {
     @Override
     public ConnectorOutput<FlowOfHumidAir> getOutputConnector() {
         return outputAirFlowConnector;
-    }
-
-    @Override
-    public String toConsoleOutput() {
-        if (inputAirFlowConnector.getConnectorData() == null || processResult == null) {
-            return "Results not available. Run process first.";
-        }
-        return ConsoleOutputFormatters.mixingConsoleOutput(processResult);
     }
 
     // Methods specific for this class
@@ -136,7 +137,7 @@ public class Mixing implements HvacProcessBlock {
         inputMixingFlowConnectors.add(ConnectorInput.of(blockWithInputMixingAirFlow.getOutputConnector()));
     }
 
-    public void addMixingFlowDataSource(OutputConnection<FlowOfHumidAir> blockWithInputMixingAirFlow){
+    public void addMixingFlowDataSource(OutputConnection<FlowOfHumidAir> blockWithInputMixingAirFlow) {
         CommonValidators.requireNotNull(blockWithInputMixingAirFlow);
         inputMixingFlowConnectors.add(ConnectorInput.of(blockWithInputMixingAirFlow.getOutputConnector()));
     }
@@ -159,15 +160,34 @@ public class Mixing implements HvacProcessBlock {
     }
 
     public static Mixing of(OutputConnection<FlowOfHumidAir> blockWithAirFlow,
+                            List<? extends OutputConnection<FlowOfHumidAir>> blocksWithInputMixingAirFlows,
+                            Pressure coilPressureLoss) {
+
+        return new Mixing(blockWithAirFlow, blocksWithInputMixingAirFlows, coilPressureLoss);
+    }
+
+    public static Mixing of(OutputConnection<FlowOfHumidAir> blockWithAirFlow,
                             List<? extends OutputConnection<FlowOfHumidAir>> blocksWithInputMixingAirFlows) {
 
-        return new Mixing(blockWithAirFlow, blocksWithInputMixingAirFlows);
+        return new Mixing(blockWithAirFlow, blocksWithInputMixingAirFlows, Pressure.ofPascal(0));
+    }
+
+    public static Mixing of(OutputConnection<FlowOfHumidAir> blockWithAirFlow,
+                            OutputConnection<FlowOfHumidAir> blockWithInputMixingAirFlow,
+                            Pressure coilPressureLoss) {
+
+        return new Mixing(blockWithAirFlow, List.of(blockWithInputMixingAirFlow), coilPressureLoss);
     }
 
     public static Mixing of(OutputConnection<FlowOfHumidAir> blockWithAirFlow,
                             OutputConnection<FlowOfHumidAir> blockWithInputMixingAirFlow) {
 
-        return new Mixing(blockWithAirFlow, List.of(blockWithInputMixingAirFlow));
+        return new Mixing(blockWithAirFlow, List.of(blockWithInputMixingAirFlow), Pressure.ofPascal(0));
+    }
+
+    @Override
+    public HydraulicLossResult getHydraulicLossResult() {
+        return hydraulicResults;
     }
 
 }

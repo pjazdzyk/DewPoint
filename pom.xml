@@ -5,7 +5,7 @@
 
     <groupId>com.synerset</groupId>
     <artifactId>hvac-engine</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <name>hvac-engine</name>
     <description>
         HVAC|Engine is a comprehensive library for calculating moist air properties, including crucial thermodynamic

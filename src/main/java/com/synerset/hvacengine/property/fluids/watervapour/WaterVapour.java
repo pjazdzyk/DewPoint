@@ -99,15 +99,15 @@ public class WaterVapour implements Fluid {
         String end = "\n\t";
         int digits = 3;
         return "WaterVapour: " + end +
-                pressure.toEngineeringFormat("P_abs", digits) + separator +
-                temperature.toEngineeringFormat("t_wv", digits) + end +
-                specificEnthalpy.toEngineeringFormat("i_wv", digits) + separator +
-                density.toEngineeringFormat("ρ_wv", digits) + separator +
-                specificHeat.toEngineeringFormat("cp_wv", digits) + end +
-                kinematicViscosity.toEngineeringFormat("ν_wv", digits) + separator +
-                dynamicViscosity.toEngineeringFormat("μ_wv", digits) + separator +
-                thermalConductivity.toEngineeringFormat("k_wv", digits) + separator +
-                prandtlNumber.toEngineeringFormat("Pr_wv", digits) + end;
+               pressure.toEngineeringFormat("P_abs", digits) + separator +
+               temperature.toEngineeringFormat("t_wv", digits) + end +
+               specificEnthalpy.toEngineeringFormat("i_wv", digits) + separator +
+               density.toEngineeringFormat("ρ_wv", digits) + separator +
+               specificHeat.toEngineeringFormat("cp_wv", digits) + end +
+               kinematicViscosity.toEngineeringFormat("ν_wv", digits) + separator +
+               dynamicViscosity.toEngineeringFormat("μ_wv", digits) + separator +
+               thermalConductivity.toEngineeringFormat("k_wv", digits) + separator +
+               prandtlNumber.toEngineeringFormat("Pr_wv", digits) + end;
     }
 
     @Override
@@ -126,16 +126,16 @@ public class WaterVapour implements Fluid {
     @Override
     public String toString() {
         return "WaterVapour{" +
-                "temperature=" + temperature +
-                ", pressure=" + pressure +
-                ", density=" + density +
-                ", specificHeat=" + specificHeat +
-                ", specificEnthalpy=" + specificEnthalpy +
-                ", dynamicViscosity=" + dynamicViscosity +
-                ", kinematicViscosity=" + kinematicViscosity +
-                ", thermalConductivity=" + thermalConductivity +
-                ", prandtlNumber=" + prandtlNumber +
-                '}';
+               "temperature=" + temperature +
+               ", pressure=" + pressure +
+               ", density=" + density +
+               ", specificHeat=" + specificHeat +
+               ", specificEnthalpy=" + specificEnthalpy +
+               ", dynamicViscosity=" + dynamicViscosity +
+               ", kinematicViscosity=" + kinematicViscosity +
+               ", thermalConductivity=" + thermalConductivity +
+               ", prandtlNumber=" + prandtlNumber +
+               '}';
     }
 
     // Static factory methods

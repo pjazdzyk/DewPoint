@@ -46,7 +46,7 @@ import static com.synerset.hvacengine.common.SharedSettings.SHOW_SOLVER_SUMMARY_
  * REFERENCES DESCRIPTION KEY: <p>
  * [reference no] [value symbology in a standard, unit] (equation number) [page] <p>
  *
- * @author Piotr Jażdżyk, MScEng
+ * @author Piotr Jażdżyk, MSc Eng
  */
 public final class HumidAirEquations {
 

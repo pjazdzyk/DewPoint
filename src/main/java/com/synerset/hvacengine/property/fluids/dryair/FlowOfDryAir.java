@@ -81,11 +81,11 @@ public class FlowOfDryAir implements Flow<DryAir> {
         String end = "\n\t";
         int digits = 3;
         return "FlowOfDryAir:" + end +
-                massFlow.toEngineeringFormat("G_da", digits) + separator +
-                massFlow.toKiloGramPerHour().toEngineeringFormat("G_da", digits) + separator +
-                volFlow.toEngineeringFormat("V_da", digits) + separator +
-                volFlow.toCubicMetersPerHour().toEngineeringFormat("V_da", digits) + end +
-                dryAir.toConsoleOutput();
+               massFlow.toEngineeringFormat("G_da", digits) + separator +
+               massFlow.toKiloGramPerHour().toEngineeringFormat("G_da", digits) + separator +
+               volFlow.toEngineeringFormat("V_da", digits) + separator +
+               volFlow.toCubicMetersPerHour().toEngineeringFormat("V_da", digits) + end +
+               dryAir.toConsoleOutput();
     }
 
     @Override
@@ -104,10 +104,10 @@ public class FlowOfDryAir implements Flow<DryAir> {
     @Override
     public String toString() {
         return "FlowOfDryAir{" +
-                "dryAir=" + dryAir +
-                ", massFlow=" + massFlow +
-                ", volFlow=" + volFlow +
-                '}';
+               "dryAir=" + dryAir +
+               ", massFlow=" + massFlow +
+               ", volFlow=" + volFlow +
+               '}';
     }
 
     // Class factory methods
