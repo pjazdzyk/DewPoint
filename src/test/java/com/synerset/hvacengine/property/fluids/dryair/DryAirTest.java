@@ -1,5 +1,6 @@
 package com.synerset.hvacengine.property.fluids.dryair;
 
+import com.synerset.hvacengine.property.fluids.FluidType;
 import com.synerset.hvacengine.property.fluids.SharedEquations;
 import com.synerset.unitility.unitsystem.thermodynamic.Pressure;
 import com.synerset.unitility.unitsystem.thermodynamic.Temperature;
@@ -53,5 +54,6 @@ class DryAirTest {
         assertThat(actualDensity).isEqualTo(expectedDensity);
         assertThat(actualThermalDiffusivity).isEqualTo(expectedThermalDiffusivity);
         assertThat(actualPrandtlNumber).isEqualTo(expectedPrandtlNumber);
+        assertThat(dryAir.getFluidType()).isEqualTo(FluidType.DRY_AIR);
     }
 }

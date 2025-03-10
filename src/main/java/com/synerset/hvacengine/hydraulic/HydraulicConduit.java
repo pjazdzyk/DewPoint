@@ -4,9 +4,7 @@ import com.synerset.hvacengine.common.validation.CommonValidators;
 import com.synerset.hvacengine.hydraulic.structure.ConduitStructure;
 import com.synerset.hvacengine.property.fluids.Flow;
 import com.synerset.hvacengine.property.fluids.Fluid;
-import com.synerset.unitility.unitsystem.common.Height;
-import com.synerset.unitility.unitsystem.common.Length;
-import com.synerset.unitility.unitsystem.common.Velocity;
+import com.synerset.unitility.unitsystem.common.*;
 import com.synerset.unitility.unitsystem.dimensionless.ReynoldsNumber;
 import com.synerset.unitility.unitsystem.hydraulic.FrictionFactor;
 import com.synerset.unitility.unitsystem.hydraulic.LinearResistance;
@@ -38,6 +36,7 @@ public class HydraulicConduit<S extends ConduitStructure, F extends Fluid> {
     // Duct geometric properties
     private final S structure;
     private final Length length;
+    private final Volume volume;
 
     // Flow data
     private final Flow<F> flowOfFluid;
@@ -49,6 +48,9 @@ public class HydraulicConduit<S extends ConduitStructure, F extends Fluid> {
     private final FrictionFactor frictionFactor;
     private final Pressure linearPressureLoss;
     private final LinearResistance linearResistance;
+
+    // Derived total linear mass density
+    private final LinearMassDensity totalLinearMassDensityWithFluid;
 
     public HydraulicConduit(S structure, Flow<F> flowOfFluid, Length length) {
         CommonValidators.requireNotNull(structure);
@@ -67,6 +69,10 @@ public class HydraulicConduit<S extends ConduitStructure, F extends Fluid> {
                 : HydraulicEquations.frictionFactorByColebrooke(structure.getEquivHydraulicDiameter(), absoluteRoughness, reynoldsNumber);
         this.linearPressureLoss = HydraulicEquations.linearPressureLoss(frictionFactor, structure.getEquivHydraulicDiameter(), length, flowOfFluid.getDensity(), velocity);
         this.linearResistance = HydraulicEquations.linearResistance(linearPressureLoss, length);
+        double volValue = length.getInMeters() * structure.getInnerSectionArea().getInSquareMeters();
+        this.volume = Volume.ofCubicMeters(volValue).toCubicDecimeter();
+        LinearMassDensity fluidLinearMassDensity = HydraulicEquations.fluidLinearMassDensity(flowOfFluid.getDensity(), structure.getInnerSectionArea(), length);
+        this.totalLinearMassDensityWithFluid = structure.getTotalLinearMassDensity().plus(fluidLinearMassDensity);
     }
 
     // Static Factory Methods
@@ -96,6 +102,10 @@ public class HydraulicConduit<S extends ConduitStructure, F extends Fluid> {
         return structure;
     }
 
+    public LinearMassDensity getTotalLinearMassDensityWithFluid() {
+        return totalLinearMassDensityWithFluid;
+    }
+
     public Length getLength() {
         return length;
     }
@@ -122,6 +132,10 @@ public class HydraulicConduit<S extends ConduitStructure, F extends Fluid> {
 
     public Pressure getLinearPressureLoss() {
         return linearPressureLoss;
+    }
+
+    public Volume getVolume() {
+        return volume;
     }
 
     public LinearResistance getLinearResistance() {
@@ -188,6 +202,8 @@ public class HydraulicConduit<S extends ConduitStructure, F extends Fluid> {
                ", frictionFactor=" + frictionFactor +
                ", linearPressureLoss=" + linearPressureLoss +
                ", linearResistance=" + linearResistance +
+               ", volume=" + volume +
+               ", totalLinearMassDensityWithFluid=" + totalLinearMassDensityWithFluid +
                '}';
     }
 

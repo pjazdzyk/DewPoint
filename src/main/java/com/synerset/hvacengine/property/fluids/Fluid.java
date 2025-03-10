@@ -9,6 +9,13 @@ import com.synerset.unitility.unitsystem.thermodynamic.*;
 public interface Fluid extends ConsolePrintable {
 
     /**
+     * Get the {@link  FluidType} eg "LIQUID_WATER".
+     *
+     * @return The {@link  FluidType} eg "LIQUID_WATER
+     */
+    FluidType getFluidType();
+
+    /**
      * Get the temperature of the fluid.
      *
      * @return The temperature in appropriate units.

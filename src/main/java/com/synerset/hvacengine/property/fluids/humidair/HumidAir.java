@@ -2,6 +2,7 @@ package com.synerset.hvacengine.property.fluids.humidair;
 
 import com.synerset.hvacengine.common.validation.CommonValidators;
 import com.synerset.hvacengine.property.fluids.Fluid;
+import com.synerset.hvacengine.property.fluids.FluidType;
 import com.synerset.hvacengine.property.fluids.FluidValidators;
 import com.synerset.hvacengine.property.fluids.SharedEquations;
 import com.synerset.hvacengine.property.fluids.dryair.DryAir;
@@ -16,6 +17,7 @@ import java.util.Objects;
  * A class representing the properties of humid air, including temperature, pressure, humidity, and more.
  */
 public class HumidAir implements Fluid {
+    public static final FluidType FLUID_TYPE = FluidType.HUMID_AIR;
     public static final Pressure PRESSURE_MIN_LIMIT = Pressure.ofPascal(50_000);
     public static final Pressure PRESSURE_MAX_LIMIT = Pressure.ofBar(50);
     public static final Temperature TEMPERATURE_MIN_LIMIT = Temperature.ofCelsius(-150);
@@ -91,6 +93,11 @@ public class HumidAir implements Fluid {
         this.thermalDiffusivity = SharedEquations.thermalDiffusivity(density, thermalConductivity, specificHeat);
         this.prandtlNumber = SharedEquations.prandtlNumber(dynamicViscosity, thermalConductivity, specificHeat);
         this.dryAirComponent = DryAir.of(pressure, temperature);
+    }
+
+    @Override
+    public FluidType getFluidType() {
+        return HumidAir.FLUID_TYPE;
     }
 
     public Temperature getTemperature() {

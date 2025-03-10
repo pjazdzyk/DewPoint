@@ -18,7 +18,7 @@ class StructureEquationsTest {
     void calculateCircularLinearMassDensityTestSteel() {
         // Given
         Diameter diameter = Diameter.ofMillimeters(1600);
-        MaterialLayer materialLayer = MaterialLayer.builder().materialData(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1.2)).build();
+        MaterialLayer materialLayer = MaterialLayer.builder().material(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1.2)).build();
 
         // When
         LinearMassDensity linearMassDensity = StructureEquations.calculateCircularLinearMassDensity(diameter, materialLayer);
@@ -34,7 +34,7 @@ class StructureEquationsTest {
         // Given
         Width width = Width.ofMillimeters(1000);
         Height height = Height.ofMillimeters(1000);
-        MaterialLayer materialLayer = MaterialLayer.builder().materialData(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1.0)).build();
+        MaterialLayer materialLayer = MaterialLayer.builder().material(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1.0)).build();
 
         // When
         LinearMassDensity linearMassDensity = StructureEquations.calculateRectangularLinearMassDensity(width, height, materialLayer);

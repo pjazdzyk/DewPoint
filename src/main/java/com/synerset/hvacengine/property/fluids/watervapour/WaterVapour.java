@@ -2,6 +2,7 @@ package com.synerset.hvacengine.property.fluids.watervapour;
 
 import com.synerset.hvacengine.common.validation.CommonValidators;
 import com.synerset.hvacengine.property.fluids.Fluid;
+import com.synerset.hvacengine.property.fluids.FluidType;
 import com.synerset.hvacengine.property.fluids.FluidValidators;
 import com.synerset.hvacengine.property.fluids.SharedEquations;
 import com.synerset.hvacengine.property.fluids.humidair.HumidAirEquations;
@@ -12,6 +13,7 @@ import com.synerset.unitility.unitsystem.thermodynamic.*;
 import java.util.Objects;
 
 public class WaterVapour implements Fluid {
+    public static final FluidType FLUID_TYPE = FluidType.WATER_VAPOUR;
     public static final Pressure PRESSURE_MIN_LIMIT = Pressure.ofPascal(0);
     public static final Temperature TEMPERATURE_MIN_LIMIT = Temperature.ofCelsius(-150);
     public static final Temperature TEMPERATURE_MAX_LIMIT = Temperature.ofCelsius(1000);
@@ -55,6 +57,11 @@ public class WaterVapour implements Fluid {
         this.kinematicViscosity = WaterVapourEquations.kinematicViscosity(temperature, density);
         this.thermalConductivity = WaterVapourEquations.thermalConductivity(temperature);
         this.prandtlNumber = SharedEquations.prandtlNumber(dynamicViscosity, thermalConductivity, specificHeat);
+    }
+
+    @Override
+    public FluidType getFluidType() {
+        return WaterVapour.FLUID_TYPE;
     }
 
     public Temperature getTemperature() {

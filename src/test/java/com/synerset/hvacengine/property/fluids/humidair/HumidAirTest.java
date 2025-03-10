@@ -1,5 +1,6 @@
 package com.synerset.hvacengine.property.fluids.humidair;
 
+import com.synerset.hvacengine.property.fluids.FluidType;
 import com.synerset.hvacengine.property.fluids.SharedEquations;
 import com.synerset.unitility.unitsystem.humidity.HumidityRatio;
 import com.synerset.unitility.unitsystem.humidity.RelativeHumidity;
@@ -77,6 +78,7 @@ class HumidAirTest {
         assertThat(actualThDiffVal).isEqualTo(expectedThDiffVal);
         assertThat(actualPrandtlVal).isEqualTo(expectedPrandtlVal);
         assertThat(actualVapourState).isEqualTo(VapourState.UNSATURATED);
+        assertThat(humidAir.getFluidType()).isEqualTo(FluidType.HUMID_AIR);
 
     }
 

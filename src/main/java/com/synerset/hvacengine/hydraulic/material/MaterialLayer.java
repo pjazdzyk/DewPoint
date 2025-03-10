@@ -13,11 +13,11 @@ public record MaterialLayer(
     }
 
     public static class Builder {
-        private MaterialData materialData;
+        private MaterialData material;
         private Height thickness;
 
-        public Builder materialData(MaterialData material) {
-            this.materialData = material;
+        public Builder material(MaterialData material) {
+            this.material = material;
             return this;
         }
 
@@ -27,7 +27,7 @@ public record MaterialLayer(
         }
 
         public MaterialLayer build() {
-            return new MaterialLayer(materialData, thickness);
+            return new MaterialLayer(material, thickness);
         }
     }
 

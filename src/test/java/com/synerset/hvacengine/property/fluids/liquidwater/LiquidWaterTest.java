@@ -1,5 +1,6 @@
 package com.synerset.hvacengine.property.fluids.liquidwater;
 
+import com.synerset.hvacengine.property.fluids.FluidType;
 import com.synerset.unitility.unitsystem.thermodynamic.Pressure;
 import com.synerset.unitility.unitsystem.thermodynamic.Temperature;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +44,7 @@ class LiquidWaterTest {
         assertThat(expectedDensity).isEqualTo(actualDensity);
         assertThat(expectedDynamicViscosity).isEqualTo(actualDynVis);
         assertThat(expectedKinematicViscosity).isEqualTo(actualKinVis);
+        assertThat(liquidWater.getFluidType()).isEqualTo(FluidType.LIQUID_WATER);
     }
 
 }

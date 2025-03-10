@@ -2,6 +2,7 @@ package com.synerset.hvacengine.property.fluids.liquidwater;
 
 import com.synerset.hvacengine.common.validation.CommonValidators;
 import com.synerset.hvacengine.property.fluids.Fluid;
+import com.synerset.hvacengine.property.fluids.FluidType;
 import com.synerset.unitility.unitsystem.thermodynamic.*;
 
 import java.util.Objects;
@@ -11,6 +12,7 @@ import java.util.Objects;
  * This class implements the Fluid interface.
  */
 public class LiquidWater implements Fluid {
+    public static final FluidType FLUID_TYPE = FluidType.LIQUID_WATER;
     public static final Pressure PRESSURE_MIN_LIMIT = Pressure.ofPascal(0);
     public static final Temperature TEMPERATURE_MIN_LIMIT = Temperature.ofCelsius(0);
     public static final Temperature TEMPERATURE_MAX_LIMIT = Temperature.ofCelsius(200);
@@ -42,6 +44,11 @@ public class LiquidWater implements Fluid {
         this.specificEnthalpy = LiquidWaterEquations.specificEnthalpy(temperature);
         this.dynamicViscosity = LiquidWaterEquations.dynamicViscosity(temperature, density);
         this.kinematicViscosity = LiquidWaterEquations.kinematicViscosity(dynamicViscosity, density);
+    }
+
+    @Override
+    public FluidType getFluidType() {
+        return LiquidWater.FLUID_TYPE;
     }
 
     @Override

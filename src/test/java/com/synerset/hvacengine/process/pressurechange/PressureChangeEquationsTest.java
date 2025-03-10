@@ -36,7 +36,7 @@ class PressureChangeEquationsTest {
 
         // Then
         assertThat(pressureChangeResult).isNotNull();
-        assertThat(pressureChangeResult.processType()).isEqualTo(ProcessType.PRESSURE_CHANGE);
+        assertThat(pressureChangeResult.processType()).isEqualTo(ProcessType.CONDUIT_FLOW);
         assertThat(pressureChangeResult.processMode()).isEqualTo(PressureMode.PRESSURE_DROP);
         assertThat(pressureChangeResult.heatOfProcess()).isEqualTo(Power.ofWatts(450));
 

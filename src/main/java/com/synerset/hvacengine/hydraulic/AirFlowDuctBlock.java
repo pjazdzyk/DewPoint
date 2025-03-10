@@ -46,7 +46,7 @@ import com.synerset.unitility.unitsystem.thermodynamic.Pressure;
  * @see FlowOfHumidAir
  */
 public class AirFlowDuctBlock implements AirFlowProcessBlock {
-
+    private static final ProcessType PROCESS_TYPE = ProcessType.CONDUIT_FLOW;
     private final ConnectorInput<FlowOfHumidAir> inputAirFlowConnector;
     private final ConnectorOutput<FlowOfHumidAir> outputAirFlowConnector;
     private final ConduitStructure conduitStructure;
@@ -106,15 +106,21 @@ public class AirFlowDuctBlock implements AirFlowProcessBlock {
         HumidAir newHumidAir = inletFlowOfHumidAir.getFluid().withPressure(pressureReducedByLosses);
         FlowOfHumidAir adjustedHumidAirFlow = inletFlowOfHumidAir.withHumidAirFixedDryAirMassFlow(newHumidAir);
 
-        HydraulicProcessResult hydraulicResult = HydraulicProcessResult.builder()
-                .inletAirFlow(inletFlowOfHumidAir)
-                .outletAirFlow(adjustedHumidAirFlow)
-                .heatOfProcess(Power.ofWatts(0))
-                .build();
-
         HydraulicLossResult hydraulicLossResult = HydraulicLossResult.builder()
                 .withLinearPressureLoss(linearPressureLoss)
                 .withLocalPressureLoss(localPressureLoss)
+                .build();
+
+        HydraulicProcessResult hydraulicResult = HydraulicProcessResult.builder()
+                .inletAirFlow(inletFlowOfHumidAir)
+                .outletAirFlow(adjustedHumidAirFlow)
+                .velocity(conduitData.getVelocity())
+                .length(conduitLength)
+                .volume(conduitData.getVolume())
+                .processType(getProcessType())
+                .heatOfProcess(Power.ofWatts(0))
+                .hydraulicLossResult(hydraulicLossResult)
+                .conduitStructure(conduitStructure)
                 .build();
 
         outputAirFlowConnector.setConnectorData(adjustedHumidAirFlow);
@@ -132,7 +138,7 @@ public class AirFlowDuctBlock implements AirFlowProcessBlock {
 
     @Override
     public ProcessType getProcessType() {
-        return ProcessType.PRESSURE_CHANGE;
+        return PROCESS_TYPE;
     }
 
     @Override

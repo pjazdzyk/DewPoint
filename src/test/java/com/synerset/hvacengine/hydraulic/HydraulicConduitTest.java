@@ -26,8 +26,8 @@ class HydraulicConduitTest {
         // Given
         Diameter diameter = Diameter.ofMillimeters(200);
         Length ductLength = Length.ofMeters(10);
-        MaterialLayer baseMaterialLayer = MaterialLayer.builder().materialData(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
-        MaterialLayer insulationLayer = MaterialLayer.builder().materialData(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(50)).build();
+        MaterialLayer baseMaterialLayer = MaterialLayer.builder().material(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
+        MaterialLayer insulationLayer = MaterialLayer.builder().material(Materials.INSUL_MINERAL_WOOL).thickness(Height.ofMillimeters(50)).build();
         CircularStructure circularStructure = CircularStructure.builder()
                 .baseMaterial(baseMaterialLayer)
                 .outerMaterialLayers(List.of(insulationLayer))
@@ -50,6 +50,11 @@ class HydraulicConduitTest {
         assertThat(actualConduit.getFrictionFactor().getValue()).isEqualTo(0.0233350, withPrecision(1E-5));
         assertThat(actualConduit.getLinearResistance().getInPascalPerMeter()).isEqualTo(1.4125, withPrecision(1E-3));
         assertThat(actualConduit.getLinearPressureLoss().getInPascals()).isEqualTo(14.125, withPrecision(1E-3));
+
+        assertThat(actualConduit.getStructure().getInnerSectionArea().getInSquareMeters()).isEqualTo(0.03141, withPrecision(1E-3));
+        assertThat(actualConduit.getVolume().getInCubicMeters()).isEqualTo(0.3141, withPrecision(1E-3));
+        assertThat(actualConduit.getStructure().getTotalLinearMassDensity().getInKilogramsPerMeter()).isEqualTo(8.1236, withPrecision(1E-3));
+        assertThat(actualConduit.getTotalLinearMassDensityWithFluid().getInKilogramsPerMeter()).isEqualTo(8.1275, withPrecision(1E-3));
 
         assertThat(actualConduit).isEqualTo(new HydraulicConduit<>(circularStructure, flowOfHumidAir, ductLength))
                 .hasSameHashCodeAs(new HydraulicConduit<>(circularStructure, flowOfHumidAir, ductLength));
@@ -75,7 +80,7 @@ class HydraulicConduitTest {
         // Given
         Diameter diameter = Diameter.ofMillimeters(200);
         Length ductLength = Length.ofMeters(10);
-        MaterialLayer baseMaterialLayer = MaterialLayer.builder().materialData(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
+        MaterialLayer baseMaterialLayer = MaterialLayer.builder().material(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
         CircularStructure circularStructure = CircularStructure.builder()
                 .baseMaterial(baseMaterialLayer)
                 .innerDiameter(diameter)
@@ -91,7 +96,7 @@ class HydraulicConduitTest {
     void createHydraulicConduitWithNullLengthTest() {
         // Given
         Diameter diameter = Diameter.ofMillimeters(200);
-        MaterialLayer baseMaterialLayer = MaterialLayer.builder().materialData(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
+        MaterialLayer baseMaterialLayer = MaterialLayer.builder().material(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
         CircularStructure circularStructure = CircularStructure.builder()
                 .baseMaterial(baseMaterialLayer)
                 .innerDiameter(diameter)
@@ -109,7 +114,7 @@ class HydraulicConduitTest {
         // Given
         Diameter diameter = Diameter.ofMillimeters(200);
         Length ductLength = Length.ofMeters(10);
-        MaterialLayer baseMaterialLayer = MaterialLayer.builder().materialData(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
+        MaterialLayer baseMaterialLayer = MaterialLayer.builder().material(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
         CircularStructure circularStructure = CircularStructure.builder()
                 .baseMaterial(baseMaterialLayer)
                 .innerDiameter(diameter)
@@ -131,7 +136,7 @@ class HydraulicConduitTest {
     void staticFactoryWithDefaultLengthTest() {
         // Given
         Diameter diameter = Diameter.ofMillimeters(200);
-        MaterialLayer baseMaterialLayer = MaterialLayer.builder().materialData(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
+        MaterialLayer baseMaterialLayer = MaterialLayer.builder().material(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
         CircularStructure circularStructure = CircularStructure.builder()
                 .baseMaterial(baseMaterialLayer)
                 .innerDiameter(diameter)
@@ -154,7 +159,7 @@ class HydraulicConduitTest {
         // Given
         Diameter diameter = Diameter.ofMillimeters(200);
         Length ductLength = Length.ofMeters(10);
-        MaterialLayer baseMaterialLayer = MaterialLayer.builder().materialData(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
+        MaterialLayer baseMaterialLayer = MaterialLayer.builder().material(Materials.INDUSTRIAL_STEEL).thickness(Height.ofMillimeters(1)).build();
         CircularStructure circularStructure = CircularStructure.builder()
                 .baseMaterial(baseMaterialLayer)
                 .innerDiameter(diameter)

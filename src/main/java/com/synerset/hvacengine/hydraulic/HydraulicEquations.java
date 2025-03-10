@@ -273,4 +273,30 @@ public class HydraulicEquations {
         return Pressure.ofPascal(localPressureLoss);
     }
 
+    /**
+     * Returns linear mass density of fluid [kg/m]. If length is 0, it will resolve to 0.
+     *
+     * @param length      Conduit length [m]
+     * @param sectionArea Section area [m2]
+     * @param density     Fluid density in [kg/m3]
+     * @return linear mass density of fluid [kg/m]
+     */
+    public static double fluidLinearMassDensity(double density, double sectionArea, double length) {
+        if (length == 0) {
+            return 0.0;
+        }
+        return (sectionArea * density) / length;
+    }
+
+    public static LinearMassDensity fluidLinearMassDensity(Density density, Area sectionArea, Length length) {
+        CommonValidators.requireNotNull(density);
+        CommonValidators.requireNotNull(length);
+        CommonValidators.requireNotNull(sectionArea);
+        double linearMassDensityValue = fluidLinearMassDensity(
+                density.getInKilogramsPerCubicMeters(),
+                sectionArea.getInSquareMeters(),
+                length.getInMeters()
+        );
+        return LinearMassDensity.ofKilogramsPerMeter(linearMassDensityValue);
+    }
 }

@@ -5,6 +5,7 @@ import com.synerset.hvacengine.hydraulic.ConduitShape;
 import com.synerset.hvacengine.hydraulic.material.MaterialLayer;
 import com.synerset.unitility.unitsystem.common.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -174,4 +175,50 @@ public class EllipticStructure implements ConduitStructure {
                ", totalLinearMassDensity=" + totalLinearMassDensity +
                '}';
     }
+
+    public static class Builder {
+        private MaterialLayer baseMaterial;
+        private Diameter innerMajorAxis;
+        private Diameter innerMinorAxis;
+        private List<MaterialLayer> outerLayers = new ArrayList<>();
+
+        public Builder baseMaterial(MaterialLayer baseMaterial) {
+            this.baseMaterial = baseMaterial;
+            return this;
+        }
+
+        public Builder innerMajorAxis(Diameter innerMajorAxis) {
+            this.innerMajorAxis = innerMajorAxis;
+            return this;
+        }
+
+        public Builder innerMinorAxis(Diameter innerMinorAxis) {
+            this.innerMinorAxis = innerMinorAxis;
+            return this;
+        }
+
+        public Builder addOuterLayer(MaterialLayer layer) {
+            this.outerLayers.add(layer);
+            return this;
+        }
+
+        public Builder outerLayers(List<MaterialLayer> outerLayers) {
+            this.outerLayers = outerLayers != null ? outerLayers : Collections.emptyList();
+            return this;
+        }
+
+        public EllipticStructure build() {
+            return new EllipticStructure(baseMaterial, innerMajorAxis, innerMinorAxis, outerLayers);
+        }
+    }
+
+    // Static factory methods
+    public static EllipticStructure of(MaterialLayer baseMaterial, Diameter innerMajorAxis, Diameter innerMinorAxis, List<MaterialLayer> outerMaterialLayers) {
+        return new EllipticStructure(baseMaterial, innerMajorAxis, innerMinorAxis, outerMaterialLayers);
+    }
+
+    public static EllipticStructure of(MaterialLayer baseMaterial, Diameter innerMajorAxis, Diameter innerMinorAxis) {
+        return new EllipticStructure(baseMaterial, innerMajorAxis, innerMinorAxis, Collections.emptyList());
+    }
+
 }

@@ -23,7 +23,7 @@ public record PressureChangeResult(ProcessType processType,
     }
 
     public static class Builder {
-        private static final ProcessType processType = ProcessType.PRESSURE_CHANGE;
+        private static final ProcessType processType = ProcessType.CONDUIT_FLOW;
         private PressureMode processMode;
         private FlowOfHumidAir inletAirFlow;
         private FlowOfHumidAir outletAirFlow;

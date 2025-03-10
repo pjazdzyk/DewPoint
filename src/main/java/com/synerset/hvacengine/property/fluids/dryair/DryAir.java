@@ -2,6 +2,7 @@ package com.synerset.hvacengine.property.fluids.dryair;
 
 import com.synerset.hvacengine.common.validation.CommonValidators;
 import com.synerset.hvacengine.property.fluids.Fluid;
+import com.synerset.hvacengine.property.fluids.FluidType;
 import com.synerset.hvacengine.property.fluids.SharedEquations;
 import com.synerset.unitility.unitsystem.dimensionless.PrandtlNumber;
 import com.synerset.unitility.unitsystem.thermodynamic.*;
@@ -13,6 +14,7 @@ import java.util.Objects;
  */
 public class DryAir implements Fluid {
 
+    public static final FluidType FLUID_TYPE = FluidType.DRY_AIR;
     public static final Pressure PRESSURE_MIN_LIMIT = Pressure.ofPascal(0);
     public static final Temperature TEMPERATURE_MIN_LIMIT = Temperature.ofCelsius(-150);
     public static final Temperature TEMPERATURE_MAX_LIMIT = Temperature.ofCelsius(1000);
@@ -48,6 +50,11 @@ public class DryAir implements Fluid {
         this.thermalConductivity = DryAirEquations.thermalConductivity(temperature);
         this.thermalDiffusivity = SharedEquations.thermalDiffusivity(density, thermalConductivity, specificHeat);
         this.prandtlNumber = SharedEquations.prandtlNumber(dynamicViscosity, thermalConductivity, specificHeat);
+    }
+
+    @Override
+    public FluidType getFluidType() {
+        return DryAir.FLUID_TYPE;
     }
 
     public Temperature getTemperature() {

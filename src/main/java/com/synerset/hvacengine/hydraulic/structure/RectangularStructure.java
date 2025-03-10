@@ -234,4 +234,14 @@ public class RectangularStructure implements ConduitStructure {
             return new RectangularStructure(baseMaterial, innerWidth, innerHeight, outerMaterialLayers);
         }
     }
+
+    // Static factory methods
+    public static RectangularStructure of(MaterialLayer baseMaterial, Width innerWidth, Height innerHeight, List<MaterialLayer> outerMaterialLayers) {
+        return new RectangularStructure(baseMaterial, innerWidth, innerHeight, outerMaterialLayers);
+    }
+
+    public static RectangularStructure of(MaterialLayer baseMaterial, Width innerWidth, Height innerHeight) {
+        return new RectangularStructure(baseMaterial, innerWidth, innerHeight, Collections.emptyList());
+    }
+
 }

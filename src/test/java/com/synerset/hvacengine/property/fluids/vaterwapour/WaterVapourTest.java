@@ -1,5 +1,6 @@
 package com.synerset.hvacengine.property.fluids.vaterwapour;
 
+import com.synerset.hvacengine.property.fluids.FluidType;
 import com.synerset.hvacengine.property.fluids.watervapour.WaterVapour;
 import com.synerset.hvacengine.property.fluids.watervapour.WaterVapourEquations;
 import com.synerset.unitility.unitsystem.humidity.RelativeHumidity;
@@ -49,6 +50,7 @@ class WaterVapourTest {
         assertThat(actualDynVis).isEqualTo(expectedDynVis);
         assertThat(actualKinViscosity).isEqualTo(expectedKinViscosity);
         assertThat(actualThermalConductivity).isEqualTo(expectedThermalConductivity);
+        assertThat(waterVapour.getFluidType()).isEqualTo(FluidType.WATER_VAPOUR);
     }
 
 }

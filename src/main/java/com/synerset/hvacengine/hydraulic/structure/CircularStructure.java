@@ -208,4 +208,13 @@ public class CircularStructure implements ConduitStructure {
         }
     }
 
+    // Static factory methods
+    public static CircularStructure of(MaterialLayer baseMaterial, Diameter innerDiameter, List<MaterialLayer> outerMaterialLayers) {
+        return new CircularStructure(baseMaterial, innerDiameter, outerMaterialLayers);
+    }
+
+    public static CircularStructure of(MaterialLayer baseMaterial, Diameter innerDiameter) {
+        return new CircularStructure(baseMaterial, innerDiameter, Collections.emptyList());
+    }
+
 }

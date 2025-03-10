@@ -5,5 +5,5 @@ public enum ProcessType {
     COOLING,
     DRY_COOLING,
     MIXING,
-    PRESSURE_CHANGE
+    CONDUIT_FLOW
 }
